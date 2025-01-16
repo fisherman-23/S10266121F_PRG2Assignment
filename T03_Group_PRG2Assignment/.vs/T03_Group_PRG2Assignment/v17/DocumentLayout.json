@@ -3,12 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\airline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\airline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\cfftflight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\cfftflight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\teamranenjingshun.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\teamranenjingshun.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\normflight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\normflight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\flight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\flight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\airline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\airline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -22,37 +34,76 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CFFTFlight.cs",
+              "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\CFFTFlight.cs",
+              "RelativeDocumentMoniker": "TeamRanenJingShun\\CFFTFlight.cs",
+              "ToolTip": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\CFFTFlight.cs",
+              "RelativeToolTip": "TeamRanenJingShun\\CFFTFlight.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-16T16:14:42.26Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "NORMFlight.cs",
+              "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\NORMFlight.cs",
+              "RelativeDocumentMoniker": "TeamRanenJingShun\\NORMFlight.cs",
+              "ToolTip": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\NORMFlight.cs",
+              "RelativeToolTip": "TeamRanenJingShun\\NORMFlight.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-16T16:12:17.119Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "TeamRanenJingShun",
+              "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\TeamRanenJingShun.csproj",
+              "RelativeDocumentMoniker": "TeamRanenJingShun\\TeamRanenJingShun.csproj",
+              "ToolTip": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\TeamRanenJingShun.csproj",
+              "RelativeToolTip": "TeamRanenJingShun\\TeamRanenJingShun.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-01-16T16:08:58.637Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Flight.cs",
               "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Flight.cs",
               "RelativeDocumentMoniker": "TeamRanenJingShun\\Flight.cs",
               "ToolTip": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Flight.cs",
               "RelativeToolTip": "TeamRanenJingShun\\Flight.cs",
-              "ViewState": "AQIAAAEAAAAAAAAAAAAAAAUAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAwAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-16T01:10:05.656Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "Airline.cs",
               "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Airline.cs",
               "RelativeDocumentMoniker": "TeamRanenJingShun\\Airline.cs",
               "ToolTip": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Airline.cs",
               "RelativeToolTip": "TeamRanenJingShun\\Airline.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-14T06:46:50.353Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Program.cs",
               "RelativeDocumentMoniker": "TeamRanenJingShun\\Program.cs",
@@ -60,8 +111,7 @@
               "RelativeToolTip": "TeamRanenJingShun\\Program.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-14T06:46:00.328Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-14T06:46:00.328Z"
             }
           ]
         }

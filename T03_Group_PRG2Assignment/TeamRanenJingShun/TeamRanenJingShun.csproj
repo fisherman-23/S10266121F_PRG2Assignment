@@ -14,13 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="airlines.csv">
+    <None Update="assets\airlines.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="boardinggates.csv">
+    <None Update="assets\boardinggates.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="flights.csv">
+    <None Update="assets\flights.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
