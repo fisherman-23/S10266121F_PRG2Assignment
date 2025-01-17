@@ -32,7 +32,53 @@ namespace TeamRanenJingShun
             {
                 return false;
             }
-            else Parallel
+            else
+            {
+                Airlines.Add(airline.Code, airline);
+                return true;
+            }
+        }
+
+        public bool AddBoardingGate(BoardingGate boardingGate)
+        {
+            if (BoardingGates.ContainsKey(boardingGate.GateName))
+            {
+                return false;
+            }
+            else
+            {
+                BoardingGates.Add(boardingGate.GateName, boardingGate);
+                return true;
+            }
+        }
+
+        public Airline? GetAirlineFromFlight(Flight flight)
+        {
+            foreach (KeyValuePair<string, Airline> kvp in Airlines)
+            {
+                Airline airline = kvp.Value;
+                if (airline.Flights.ContainsKey(flight.FlightNumber))
+                {
+                    return airline;
+                }
+            }
+            return null;
+        }
+
+        public void PrintAirlineFees()
+        {
+            foreach (KeyValuePair<string, Airline> kvp in Airlines)
+            {
+                Airline airline = kvp.Value;
+                double total = airline.CalculateFees();
+                Console.WriteLine($"Airline: {airline.Name}\tTotal Fees: {total:f2}");
+            }
+        }
+
+
+        public override string ToString()
+        {
+            return "Terminal Name: " + TerminalName;
         }
     }
 }
