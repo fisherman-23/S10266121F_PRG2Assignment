@@ -15,3 +15,12 @@ using TeamRanenJingShun;
 //Console.WriteLine(al.CalculateFees());
 //Console.WriteLine(al2.CalculateFees());
 
+//1 Load files (airlines and boarding gates)
+string[] airlinesCSVLines = File.ReadAllLines("assets/airlines.csv");
+Dictionary<string, Airline> AirlineDict = new Dictionary<string, Airline>();
+for (int i = 1; i < airlinesCSVLines.Length; i++)
+{
+    string[] line = airlinesCSVLines[i].Split(',');
+    Airline airline = new Airline(line[0], line[1]);
+    AirlineDict[line[1]] = airline;
+}
