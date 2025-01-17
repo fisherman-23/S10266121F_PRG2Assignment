@@ -34,7 +34,7 @@ namespace TeamRanenJingShun
                 }
                 // For not indicating any Special Request Codes, airlines receive a discount of 50 on the total fees.
                 Console.WriteLine(entry.Value.GetType());
-                if (entry.Value.GetType() == typeof(Flight))
+                if (entry.Value.GetType() == typeof(Flight) || entry.Value.GetType() == typeof(NORMFlight))
                 {
                     totalFees -= 50;
                 }

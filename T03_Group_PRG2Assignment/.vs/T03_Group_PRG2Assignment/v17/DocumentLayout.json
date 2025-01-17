@@ -3,28 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\flight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\flight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\airline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\airline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\normflight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\normflight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\airline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\airline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\cfftflight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\cfftflight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\teamranenjingshun.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\teamranenjingshun.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\flight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\flight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\normflight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\normflight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|c:\\users\\ooijs\\documents\\development\\npdit\\prg2\\prg2-assignment\\t03_group_prg2assignment\\teamranenjingshun\\teamranenjingshun.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{91B37F4C-9946-4237-83B4-D1725B811D10}|TeamRanenJingShun\\TeamRanenJingShun.csproj|solutionrelative:teamranenjingshun\\teamranenjingshun.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
@@ -44,26 +44,27 @@
               "RelativeDocumentMoniker": "TeamRanenJingShun\\CFFTFlight.cs",
               "ToolTip": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\CFFTFlight.cs",
               "RelativeToolTip": "TeamRanenJingShun\\CFFTFlight.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-16T16:14:42.26Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 0,
               "Title": "NORMFlight.cs",
               "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\NORMFlight.cs",
               "RelativeDocumentMoniker": "TeamRanenJingShun\\NORMFlight.cs",
               "ToolTip": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\NORMFlight.cs",
               "RelativeToolTip": "TeamRanenJingShun\\NORMFlight.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAApAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-16T16:12:17.119Z"
+              "WhenOpened": "2025-01-16T16:12:17.119Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "TeamRanenJingShun.csproj",
               "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\TeamRanenJingShun.csproj",
               "RelativeDocumentMoniker": "TeamRanenJingShun\\TeamRanenJingShun.csproj",
@@ -75,39 +76,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "Flight.cs",
               "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Flight.cs",
               "RelativeDocumentMoniker": "TeamRanenJingShun\\Flight.cs",
               "ToolTip": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Flight.cs",
               "RelativeToolTip": "TeamRanenJingShun\\Flight.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAADEAAAAJAAAA",
+              "ViewState": "AQIAABAAAAAAAAAAAAAQwBgAAAAWAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-16T01:10:05.656Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Airline.cs",
               "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Airline.cs",
               "RelativeDocumentMoniker": "TeamRanenJingShun\\Airline.cs",
               "ToolTip": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Airline.cs",
               "RelativeToolTip": "TeamRanenJingShun\\Airline.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACQAAAA8AAAA",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAABEAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-14T06:46:50.353Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Program.cs",
               "RelativeDocumentMoniker": "TeamRanenJingShun\\Program.cs",
               "ToolTip": "C:\\Users\\ooijs\\Documents\\development\\NPDIT\\prg2\\PRG2-Assignment\\T03_Group_PRG2Assignment\\TeamRanenJingShun\\Program.cs",
               "RelativeToolTip": "TeamRanenJingShun\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAmAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAnAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-14T06:46:00.328Z",
               "EditorCaption": ""

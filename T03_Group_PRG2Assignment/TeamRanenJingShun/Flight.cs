@@ -22,7 +22,7 @@ namespace TeamRanenJingShun
 
         public string Status { get; set; }
 
-        public double CalculateFees()
+        public virtual double CalculateFees()
         {
             Double fee = 300; // base fee is 300
             if (Destination == "SIN")

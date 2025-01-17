@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace TeamRanenJingShun
 {
-    internal class NORMFlight
+    class NORMFlight : Flight 
     {
+
+        public NORMFlight(string flightNo, string origin, string dest, DateTime et, string status) : base(flightNo, origin, dest, et, status)
+        {
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }
