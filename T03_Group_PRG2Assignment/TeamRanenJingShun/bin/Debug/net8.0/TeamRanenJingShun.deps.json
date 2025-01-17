@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "TeamRanenJingShun/1.0.0": {
+        "runtime": {
+          "TeamRanenJingShun.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "TeamRanenJingShun/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

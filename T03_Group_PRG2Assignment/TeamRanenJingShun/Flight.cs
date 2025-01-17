@@ -24,7 +24,15 @@ namespace TeamRanenJingShun
 
         public double CalculateFees()
         {
-            return 0;
+            Double fee = 300; // base fee is 300
+            if (Destination == "SIN")
+            {
+                fee += 500;
+            } else if (Origin == "SIN")
+            {
+                fee += 800;
+            }
+            return fee;
         }
 
         public override string ToString()
