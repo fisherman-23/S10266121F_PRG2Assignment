@@ -1,4 +1,9 @@
-﻿using System;
+﻿//==========================================================
+// Student Number : S10266121F
+// Student Name : Ooi Jing Shun
+// Partner Name : Ranen Sim
+//==========================================================
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
