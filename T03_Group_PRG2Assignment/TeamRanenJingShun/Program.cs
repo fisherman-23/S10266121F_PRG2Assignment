@@ -115,9 +115,10 @@ AddDataToTerminal(Terminal5);
 
 void DisplayBoardingGates(Terminal Terminal5)
 {
+    Console.WriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
+    Console.WriteLine($"{"Gate Name", -15} {"DDJB", -20} {"CFFT", -20} {"LWTT"}");
     foreach (KeyValuePair<string, BoardingGate> kvp in Terminal5.BoardingGates)
     {
-        Console.WriteLine($"Gate Name: {kvp.Value.GateName}");
 
         bool CFFT = false;
         bool DDJB = false;
@@ -136,36 +137,18 @@ void DisplayBoardingGates(Terminal Terminal5)
         }
 
 
-        if (!(CFFT || DDJB || LWTT))
-        {
-            Console.WriteLine("No special request codes supported.");
-        }
-        else
-        {
-            Console.Write("Special request code(s) supported: ");
-            if (CFFT)
-            {
-                Console.Write("CFFT ");
-            }
-            if (DDJB)
-            {
-                Console.Write("DDJB ");
-            }
-            if (LWTT)
-            {
-                Console.WriteLine("LWTT ");
-            }
-            Console.WriteLine();
-        }
 
-        if (kvp.Value.Flight != null)
-        {
-            Console.WriteLine($"Assigned Flight Number: {kvp.Value.Flight.FlightNumber}");
-        }
-        else
-        {
-            Console.WriteLine("No flight assigned to this gate.");
-        }
+        Console.WriteLine($"{kvp.Value.GateName, -15} {DDJB, -20} {CFFT, -20} {LWTT}");
+        
+
+        //if (kvp.Value.Flight != null)
+        //{
+        //    Console.WriteLine($"Assigned Flight Number: {kvp.Value.Flight.FlightNumber}");
+        //}
+        //else
+        //{
+        //    Console.WriteLine("No flight assigned to this gate.");
+        //}
 
         Console.WriteLine();
     }
