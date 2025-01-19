@@ -26,7 +26,7 @@ namespace TeamRanenJingShun
 
         public override string ToString()
         {
-            return base.ToString() + "RequestFee: " + RequestFee;
+            return base.ToString() + " RequestFee: " + RequestFee;
         }
 
     }

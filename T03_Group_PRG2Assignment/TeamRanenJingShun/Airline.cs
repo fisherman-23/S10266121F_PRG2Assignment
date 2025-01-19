@@ -46,7 +46,7 @@ namespace TeamRanenJingShun
                     totalDiscount += 50;
                 }
                 // For each flight with the Origin of Dubai (DXB), Bangkok (BKK) or Tokyo (NRT), airlines receive a discount of 25 on the total fees.
-                if (entry.Value.Origin == "DXB" || entry.Value.Origin == "BKK" || entry.Value.Origin == "NRT")
+                if (entry.Value.Origin == "Dubai (DXB)" || entry.Value.Origin == "Bangkok (BKK)" || entry.Value.Origin == "Tokyo (NRT)")
                 {
                     totalDiscount += 25;
                 }
