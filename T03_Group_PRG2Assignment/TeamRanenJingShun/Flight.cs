@@ -25,10 +25,10 @@ namespace TeamRanenJingShun
         public virtual double CalculateFees()
         {
             Double fee = 300; // base fee is 300
-            if (Destination == "SIN")
+            if (Destination == "Singapore (SIN)")
             {
                 fee += 500;
-            } else if (Origin == "SIN")
+            } else if (Origin == "Singapore (SIN)")
             {
                 fee += 800;
             }

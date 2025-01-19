@@ -42,3 +42,38 @@ for (int i = 1; i < BoardingGatesCSVLines.Length; i++)
     BoardingGate boardingGate = new BoardingGate(line[0].Trim(), Convert.ToBoolean(line[2].Trim()), Convert.ToBoolean(line[1].Trim()), Convert.ToBoolean(line[3].Trim()));
     BoardingGateDict[line[0]] = boardingGate;
 }
+
+
+//2 Load files (flights)
+Dictionary<string, Flight> FlightDict = new Dictionary<string, Flight>();
+string[] FlightsCSVLines = File.ReadAllLines("assets/flights.csv")[1..];
+foreach (string line in FlightsCSVLines)
+{
+    string[] value = line.Split(",");
+    string requestCode = value[4];
+    if (requestCode == "")
+    {
+        Flight flight = new NORMFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
+        FlightDict.Add(value[0], flight);
+    }
+    else if (requestCode == "CFFT")
+    {
+        Flight flight = new CFFTFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
+        FlightDict.Add(value[0], flight);
+    }
+    else if (requestCode == "DDJB")
+    {
+        Flight flight = new DDJBFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
+        FlightDict.Add(value[0], flight);
+    } else if (requestCode == "LWTT")
+    {
+        Flight flight = new LWTTFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
+        FlightDict.Add(value[0], flight);
+    }
+
+}
+//Console.WriteLine("Flights loaded");
+//foreach (KeyValuePair<string, Flight> kvp in FlightDict )
+//{
+//    Console.WriteLine(kvp.Value);
+//}
