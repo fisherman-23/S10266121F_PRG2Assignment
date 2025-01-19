@@ -51,38 +51,52 @@ void LoadFiles(Dictionary<string, Airline> AirlineDict, Dictionary<string, Board
 LoadFiles(AirlineDict, BoardingGateDict);
 
 //2 Load files (flights)
-Dictionary<string, Flight> FlightDict = new Dictionary<string, Flight>();
-string[] FlightsCSVLines = File.ReadAllLines("assets/flights.csv")[1..];
-foreach (string line in FlightsCSVLines)
+void LoadFlights(Dictionary<string, Flight> FlightDict)
 {
-    string[] value = line.Split(",");
-    string requestCode = value[4];
-    if (requestCode == "")
+    string[] FlightsCSVLines = File.ReadAllLines("assets/flights.csv")[1..];
+    foreach (string line in FlightsCSVLines)
     {
-        Flight flight = new NORMFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
-        FlightDict.Add(value[0], flight);
-    }
-    else if (requestCode == "CFFT")
-    {
-        Flight flight = new CFFTFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
-        FlightDict.Add(value[0], flight);
-    }
-    else if (requestCode == "DDJB")
-    {
-        Flight flight = new DDJBFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
-        FlightDict.Add(value[0], flight);
-    } else if (requestCode == "LWTT")
-    {
-        Flight flight = new LWTTFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
-        FlightDict.Add(value[0], flight);
-    }
+        string[] value = line.Split(",");
+        string requestCode = value[4];
+        if (requestCode == "")
+        {
+            Flight flight = new NORMFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
+            FlightDict.Add(value[0], flight);
+        }
+        else if (requestCode == "CFFT")
+        {
+            Flight flight = new CFFTFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
+            FlightDict.Add(value[0], flight);
+        }
+        else if (requestCode == "DDJB")
+        {
+            Flight flight = new DDJBFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
+            FlightDict.Add(value[0], flight);
+        }
+        else if (requestCode == "LWTT")
+        {
+            Flight flight = new LWTTFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
+            FlightDict.Add(value[0], flight);
+        }
 
+    }
 }
-//Console.WriteLine("Flights loaded");
-//foreach (KeyValuePair<string, Flight> kvp in FlightDict )
-//{
-//    Console.WriteLine(kvp.Value);
-//}
+Dictionary<string, Flight> FlightDict = new Dictionary<string, Flight>();
+LoadFlights(FlightDict);
+
+//3 List all flights
+void DisplayFlights(Dictionary<string, Flight> FlightDict, Dictionary<string, Airline> AirlineDict)
+{
+    Console.WriteLine("=============================================\r\nList of Flights for Changi Airport Terminal 5\r\n=============================================");
+    Console.WriteLine($"{"Flight Number",-17}{"Airline name",-20}{"Origin",-20}{"Destination",-20}{"Expected Departure/Arrival Time",-30}");
+    foreach (KeyValuePair<string, Flight> kvp in FlightDict)
+    {
+        Console.WriteLine($"{kvp.Value.FlightNumber,-17}{AirlineDict[kvp.Value.FlightNumber[0..2]].Name,-20}{kvp.Value.Origin,-20}{kvp.Value.Destination,-20}{kvp.Value.ExpectedTime,-30}");
+        Console.WriteLine();
+    }
+}   
+DisplayFlights(FlightDict, AirlineDict);
+
 
 //4 List all boarding gates
 Terminal Terminal5 = new Terminal("Terminal5");
