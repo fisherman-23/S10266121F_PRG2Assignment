@@ -173,3 +173,101 @@ void DisplayBoardingGates(Terminal Terminal5)
 }
 
 DisplayBoardingGates(Terminal5);
+
+//5 Assign a boarding gate to a flight
+void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> FlightDict, Dictionary<string, BoardingGate> BoardingGateDict)
+{
+    Dictionary<Type,string> requestCodeDict = new Dictionary<Type, string>
+    {
+        {typeof(CFFTFlight), "CFFT"},
+        {typeof(DDJBFlight), "DDJB"},
+        {typeof(LWTTFlight), "LWTT"},
+        {typeof(NORMFlight), "None"},
+        {typeof(Flight), "None"}
+    };  
+    Console.WriteLine("Enter Flight Number: ");
+    string flightNumber = Console.ReadLine(); //SQ 115
+    if (FlightDict.ContainsKey(flightNumber))
+    {   
+        Console.WriteLine("Enter Boarding Gate Name: ");
+        string gateName = Console.ReadLine(); //A1
+        if (BoardingGateDict.ContainsKey(gateName))
+        {   
+            if (Terminal5.BoardingGates[gateName].Flight != null)
+            {
+                Console.WriteLine("This gate is already assigned to a flight.");
+                return;
+            }
+            Flight flight = FlightDict[flightNumber];
+            Console.WriteLine($"Flight Number: {flight.FlightNumber}");
+            Console.WriteLine($"Origin: {flight.Origin}");
+            Console.WriteLine($"Destination: {flight.Destination}");
+            Console.WriteLine($"Expected Time: {flight.ExpectedTime}");
+            Console.WriteLine($"Special Request Code: {requestCodeDict[flight.GetType()]}");
+
+            Console.WriteLine($"Boarding Gate Name: {gateName}");
+            Console.WriteLine($"Supports DDJB: {BoardingGateDict[gateName].SupportsDDJB}");
+            Console.WriteLine($"Supports CFFT: {BoardingGateDict[gateName].SupportsCFFT}");
+            Console.WriteLine($"Supports LWTT: {BoardingGateDict[gateName].SupportsLWTT}");
+
+            while (true) {
+                Console.WriteLine("Would you like to update the status of the flight? (Y/N)");
+                string response = Console.ReadLine();
+
+                if (response == "Y")
+                {
+                    while (true)
+                    {
+                        Console.WriteLine("1. Delayed\n2. Boarding\n3. On time");
+
+                        string status = Console.ReadLine();
+                        if (status == "1")
+                        {
+                            flight.Status = "Delayed";
+                            break;
+                        }
+                        else if (status == "2")
+                        {
+                            flight.Status = "Boarding";
+                            break;
+                        }
+                        else if (status == "3")
+                        {
+                            flight.Status = "On Time";
+                            break;
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid status.");
+                        }
+
+                    }
+                    break;
+                }
+                else if (response == "N")
+                {
+                    flight.Status = "On Time";
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid response.");
+                }
+            }
+
+
+            Terminal5.BoardingGates[gateName].Flight = flight;
+            Console.WriteLine($"Flight {flight.FlightNumber} has been assigned to gate {gateName}.");
+        }
+        else
+        {
+            Console.WriteLine("Invalid gate name.");
+        }
+    }
+    else
+    {
+        Console.WriteLine("Invalid flight number.");
+    }
+}
+AssignBoardingGateToFlight(Terminal5, FlightDict, BoardingGateDict);
