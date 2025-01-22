@@ -100,24 +100,24 @@ DisplayFlights(FlightDict, AirlineDict);
 
 //4 List all boarding gates
 Terminal Terminal5 = new Terminal("Terminal5");
-void AddDataToTerminal(Terminal Terminal5)
+void AddDataToTerminal(Terminal terminal)
 {
     foreach (KeyValuePair<string, Airline> kvp in AirlineDict)
     {
-        Terminal5.AddAirline(kvp.Value);
+        terminal.AddAirline(kvp.Value);
     }
     foreach (KeyValuePair<string, BoardingGate> kvp in BoardingGateDict)
     {
-        Terminal5.AddBoardingGate(kvp.Value);
+        terminal.AddBoardingGate(kvp.Value);
     }
 }
 AddDataToTerminal(Terminal5);
 
-void DisplayBoardingGates(Terminal Terminal5)
+void DisplayBoardingGates(Terminal terminal)
 {
     Console.WriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
     Console.WriteLine($"{"Gate Name", -15} {"DDJB", -20} {"CFFT", -20} {"LWTT"}");
-    foreach (KeyValuePair<string, BoardingGate> kvp in Terminal5.BoardingGates)
+    foreach (KeyValuePair<string, BoardingGate> kvp in terminal.BoardingGates)
     {
 
         bool CFFT = false;
@@ -156,3 +156,69 @@ void DisplayBoardingGates(Terminal Terminal5)
 }
 
 DisplayBoardingGates(Terminal5);
+
+
+// 7 Display full flight details from an airline
+void DisplayAirline(Terminal terminal)
+{
+    Console.WriteLine("=============================================\r\nList of Airlines for Changi Airport Terminal 5\r\n=============================================");
+    Console.WriteLine($"{"Airline Code", -20} Airline Name");
+    foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
+    {
+        Console.WriteLine($"{kvp.Key, -20} {kvp.Value.Name}");
+    }
+}
+
+void DisplayFlightFromAirline(Terminal terminal)
+{
+    string? code = null;
+    while (true)
+    {
+        Console.WriteLine();
+        Console.WriteLine("Enter Airline Code: ");
+        try
+        {
+            code = Console.ReadLine().ToUpper();
+        }
+        catch 
+        {
+            Console.WriteLine("Invalid input, please try again.");
+            continue;
+        }
+        break;
+    }
+
+    Airline? airline = null;
+    foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
+    {
+        if (kvp.Key == code)
+        {
+            airline = kvp.Value;
+        }
+    }
+    if (airline != null)
+    {  
+        if (airline.Flights.Count == 0)
+        {
+            Console.WriteLine($"No flights available for airline {airline.Name}");
+        }
+        else
+        {
+            Console.WriteLine($"{"Flight Number", -20} {"Airline Name", -25} {"Origin", -20} {"Destination", -20} Expected");
+            Console.WriteLine("Departure/Arrival Time");
+            foreach (KeyValuePair<string, Flight> kvp in airline.Flights)
+            {
+                Flight flight = kvp.Value;
+                string date = flight.ExpectedTime.ToString("dd/MM/yyyy");
+                string time = flight.ExpectedTime.ToString("hh:mm tt") + ":00";
+                Console.WriteLine($"{flight.FlightNumber, -20} {airline.Name, -25} {flight.Origin, -20} {flight.Destination, -20} {date}");
+                Console.WriteLine(time);
+            }
+        }
+    }
+    else
+    {
+        Console.WriteLine("Airline not found");
+    }
+}
+DisplayFlightFromAirline(Terminal5);
