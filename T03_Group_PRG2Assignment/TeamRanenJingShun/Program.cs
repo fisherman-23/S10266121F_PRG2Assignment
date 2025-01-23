@@ -3,27 +3,27 @@ using System.Runtime.InteropServices;
 using TeamRanenJingShun;
 
 // Temporary code to test the classes
-//Flight fl = new NORMFlight("SQ123", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Flight fl2 = new CFFTFlight("SQ122", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Flight fl3 = new CFFTFlight("SQ121", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Flight fl4 = new CFFTFlight("SQ120", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Flight fl5 = new CFFTFlight("SQ119", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Flight fl6 = new CFFTFlight("SQ118", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Console.WriteLine(fl.CalculateFees());
-//Console.WriteLine(fl2.CalculateFees());
-//Airline al = new Airline("SQ", "123");
-//Airline al2 = new Airline("SQ", "122");
+Flight fl = new NORMFlight("SQ123", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+Flight fl2 = new CFFTFlight("SQ122", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+Flight fl3 = new CFFTFlight("SQ121", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+Flight fl4 = new CFFTFlight("SQ120", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+Flight fl5 = new CFFTFlight("SQ119", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+Flight fl6 = new CFFTFlight("SQ118", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+Console.WriteLine(fl.CalculateFees());
+Console.WriteLine(fl2.CalculateFees());
+Airline al = new Airline("SQ", "123");
+Airline al2 = new Airline("SQ", "122");
 
-//al.AddFlight(fl);
-//al.AddFlight(fl2);
-//al.AddFlight(fl3);
-//al.AddFlight(fl4);
-//al.AddFlight(fl5);
-//al.AddFlight(fl6);
+al.AddFlight(fl);
+al.AddFlight(fl2);
+al.AddFlight(fl3);
+al.AddFlight(fl4);
+al.AddFlight(fl5);
+al.AddFlight(fl6);
 
 
-//Console.WriteLine(al.CalculateFees());
-//Console.WriteLine(al2.CalculateFees());
+Console.WriteLine(al.CalculateFees());
+Console.WriteLine(al2.CalculateFees());
 
 //1 Load files (airlines and boarding gates)
 
@@ -389,7 +389,7 @@ void DisplayFlightFromAirline(Terminal terminal)
 
 }
 
-DisplayFlightFromAirline(Terminal5);
+//DisplayFlightFromAirline(Terminal5);
 
 void DisplayFlightDetails(Airline airline)
 {
@@ -484,5 +484,46 @@ string GetRequestCode(Flight flight)
     }
 }
 
+// 9 Display scheduled flights from earliest to latest
 
+void DisplayScheduledFlights(Dictionary<string, Flight> FlightDict)
+{
+    List<Flight> flights = new List<Flight>();
+    foreach (KeyValuePair<string, Flight> kvp in FlightDict)
+    {
+        flights.Add(kvp.Value);
+    }
+    flights.Sort();
+    Console.WriteLine("=============================================\r\nFlight Schedule for Changi Airport Terminal 5\r\n=============================================");
+    Console.WriteLine($"{"Flight Number",-17}{"Airline name",-20}{"Origin",-20}{"Destination",-20}{"Expected Departure/Arrival Time",-35}{"Status",-15}{"Boarding Gate",-15}");
+    foreach (Flight flight in flights)
+    {   
+        BoardingGate? boardingGate = FindBoardingGateByFlightNumber(FlightDict, Terminal5, flight);
+        Console.WriteLine($"{flight.FlightNumber,-17}{AirlineDict[flight.FlightNumber[0..2]].Name,-20}{flight.Origin,-20}{flight.Destination,-20}{flight.ExpectedTime,-35}{flight.Status,-15}{boardingGate?.GateName ?? "Unassigned",-15}\n");
+    }
+}
+DisplayScheduledFlights(FlightDict);
 
+BoardingGate? FindBoardingGateByFlightNumber(Dictionary<string, Flight> FlightDict, Terminal Terminal5, Flight targetFlight)
+{
+    string flightNumber = targetFlight.FlightNumber;
+    if (FlightDict.ContainsKey(flightNumber))
+    {
+        Flight flight = FlightDict[flightNumber];
+        Dictionary<string, BoardingGate> BoardingGateDict = Terminal5.BoardingGates;
+        foreach (KeyValuePair<string, BoardingGate> kvp in BoardingGateDict)
+        {
+            if (kvp.Value.Flight == flight)
+            {
+                //Console.WriteLine($"Flight {flightNumber} is assigned to gate {kvp.Key}");
+                return kvp.Value;
+            }
+        }
+        //Console.WriteLine($"Flight {flightNumber} is not assigned to any gate.");
+        return null;
+    }
+    else
+    {
+        return null;
+    }
+}

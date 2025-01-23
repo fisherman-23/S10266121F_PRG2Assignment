@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace TeamRanenJingShun
 {
-    class Flight
+    abstract class Flight : IComparable<Flight>
     {
         public string FlightNumber { get; set; }
         public string Origin { get; set; }
@@ -47,6 +47,11 @@ namespace TeamRanenJingShun
             Destination = dest;
             ExpectedTime = et;
             Status = status;
+        }
+
+        public int CompareTo(Flight other)
+        {
+            return this.ExpectedTime.CompareTo(other.ExpectedTime);
         }
     }
 }
