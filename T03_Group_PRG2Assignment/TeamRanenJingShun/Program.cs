@@ -253,4 +253,73 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
         Console.WriteLine("Invalid flight number.");
     }
 }
-AssignBoardingGateToFlight(Terminal5, FlightDict, BoardingGateDict);
+//AssignBoardingGateToFlight(Terminal5, FlightDict, BoardingGateDict);
+
+//6 Create a new flight
+void CreateNewFlight(Dictionary<string, Flight> FlightDict)
+{
+    while (true)
+    {
+        Console.Write("Enter Flight Number: ");
+        string flightNumber = Console.ReadLine();
+        Console.Write("Enter Origin: ");
+        string origin = Console.ReadLine();
+        Console.Write("Enter Destination: ");
+        string destination = Console.ReadLine();
+        Console.Write("Enter Expected Departure/Arrival Time (dd/mm/yyyy hh:mm): ");
+        DateTime expectedTime = DateTime.Parse(Console.ReadLine());
+        Console.Write("Enter Special Request Code (CFFT/DDJB/LWTT/None): ");
+        string requestCode = Console.ReadLine();
+        
+        if (requestCode == "")
+        {
+            Flight flight = new NORMFlight(flightNumber, origin, destination, expectedTime, "On Time");
+            FlightDict.Add(flightNumber, flight);
+            // Add to flights.csv
+            File.AppendAllText("assets/flights.csv", $"{flightNumber},{origin},{destination},{expectedTime},\n");
+        }
+        else if (requestCode == "CFFT")
+        {
+            Flight flight = new CFFTFlight(flightNumber, origin, destination, expectedTime, "On Time");
+            FlightDict.Add(flightNumber, flight);
+            // Add to flights.csv
+            File.AppendAllText("assets/flights.csv", $"{flightNumber},{origin},{destination},{expectedTime},CFFT\n");
+        }
+        else if (requestCode == "DDJB")
+
+        {
+            Flight flight = new DDJBFlight(flightNumber, origin, destination, expectedTime, "On Time");
+            FlightDict.Add(flightNumber, flight);
+            // Add to flights.csv
+            File.AppendAllText("assets/flights.csv", $"{flightNumber},{origin},{destination},{expectedTime},DDJB\n");
+        }
+        else if (requestCode == "LWTT")
+        {
+            Flight flight = new LWTTFlight(flightNumber, origin, destination, expectedTime, "On Time");
+            FlightDict.Add(flightNumber, flight);
+            // Add to flights.csv
+            File.AppendAllText("assets/flights.csv", $"{flightNumber},{origin},{destination},{expectedTime},LWTT\n");
+        }
+
+        Console.WriteLine($"Flight {flightNumber} has been added!");
+        Console.WriteLine("Would you like to add another flight? (Y/N)");
+        string response = Console.ReadLine();
+        if (response == "Y")
+        {
+            Console.WriteLine("Continuing");
+        } else if (response == "N")
+        {
+            Console.WriteLine("Exiting...");
+            break;
+        }
+        else
+        {
+            Console.WriteLine("Not a valid option, exiting...");
+            break;
+        }
+    }
+
+}
+
+CreateNewFlight(FlightDict);
+DisplayFlights(FlightDict, AirlineDict);
