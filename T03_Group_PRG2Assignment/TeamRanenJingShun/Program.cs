@@ -9,8 +9,8 @@ Flight fl3 = new CFFTFlight("SQ121", "DXB", "SIN", new DateTime(2025, 1, 1), "On
 Flight fl4 = new CFFTFlight("SQ120", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
 Flight fl5 = new CFFTFlight("SQ119", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
 Flight fl6 = new CFFTFlight("SQ118", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-Console.WriteLine(fl.CalculateFees());
-Console.WriteLine(fl2.CalculateFees());
+//Console.WriteLine(fl.CalculateFees());
+//Console.WriteLine(fl2.CalculateFees());
 Airline al = new Airline("SQ", "123");
 Airline al2 = new Airline("SQ", "122");
 
@@ -22,8 +22,8 @@ al.AddFlight(fl5);
 al.AddFlight(fl6);
 
 
-Console.WriteLine(al.CalculateFees());
-Console.WriteLine(al2.CalculateFees());
+//Console.WriteLine(al.CalculateFees());
+//Console.WriteLine(al2.CalculateFees());
 
 //1 Load files (airlines and boarding gates)
 
@@ -96,7 +96,7 @@ void DisplayFlights(Dictionary<string, Flight> FlightDict, Dictionary<string, Ai
         Console.WriteLine();
     }
 }   
-DisplayFlights(FlightDict, AirlineDict);
+//DisplayFlights(FlightDict, AirlineDict);
 
 
 //4 List all boarding gates
@@ -156,7 +156,7 @@ void DisplayBoardingGates(Terminal terminal)
 
 }
 
-DisplayBoardingGates(Terminal5);
+//DisplayBoardingGates(Terminal5);
 
 //5 Assign a boarding gate to a flight
 void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> FlightDict, Dictionary<string, BoardingGate> BoardingGateDict)
@@ -369,12 +369,12 @@ void DisplayFlightFromAirline(Terminal terminal)
             }
             else
             {
-                Console.WriteLine($"{"Airline Number", -10} {"Origin", -20} {"Destination"}");
-                Console.WriteLine("Departure/Arrival Time");
+                Console.WriteLine($"{"Flight Number", -15} {"Origin", -20} {"Destination"}");
+                //Console.WriteLine("Departure/Arrival Time");
                 foreach (KeyValuePair<string, Flight> kvp in airline.Flights)
                 {
                     Flight flight = kvp.Value;
-                    Console.WriteLine($"{flight.FlightNumber, -10} {flight.Origin, -25} {flight.Destination, -20}");
+                    Console.WriteLine($"{flight.FlightNumber, -15} {flight.Origin, -25} {flight.Destination, -20}");
                 }
                 DisplayFlightDetails(airline);
             }
@@ -389,6 +389,8 @@ void DisplayFlightFromAirline(Terminal terminal)
 
 }
 
+//Terminal5.AddAirline(al);
+//DisplayAirline(Terminal5);
 //DisplayFlightFromAirline(Terminal5);
 
 void DisplayFlightDetails(Airline airline)
@@ -413,17 +415,18 @@ void DisplayFlightDetails(Airline airline)
             Flight flight = kvp.Value;
             if (kvp.Key == code)
             {
+                Console.WriteLine();
                 Console.WriteLine($"Full flight details for {flight.FlightNumber}");
                 string date = flight.ExpectedTime.ToString("dd/MM/yyyy");
                 string time = flight.ExpectedTime.ToString("hh:mm tt") + ":00";
-                Console.WriteLine($"{"Flight Number", -10} {"Airline Name", -25} {"Origin", -15} {"Destination", -15} {"Expected", -10}");
+                Console.WriteLine($"{"Flight Number", -15} {"Airline Name", -25} {"Origin", -15} {"Destination", -15} {"Expected Date", -16} {"Expected Time"}");
 
                 bool sr = false;
                 bool bg = false;
                 BoardingGate? boardingGate = null;
                 if (flight.GetType() == typeof(CFFTFlight) || flight.GetType() == typeof(DDJBFlight) || flight.GetType() == typeof(LWTTFlight))
                 {
-                    Console.Write($"{"Special Request Code",-20}");
+                    Console.Write($"{"Special Request Code", -30}");
                     sr = true;
                 }
                 if (!(flight.GetType() == typeof(NORMFlight))) {
@@ -431,15 +434,18 @@ void DisplayFlightDetails(Airline airline)
                     bg = true;
                 }
                 Console.WriteLine();
-                Console.WriteLine($"{flight.FlightNumber, -10} {airline.Name, -25} {flight.Origin, -15} {flight.Destination, -15} {date}");
-                Console.WriteLine(time);
+                Console.WriteLine($"{flight.FlightNumber, -15} {airline.Name, -25} {flight.Origin, -15} {flight.Destination, -15} {date, -16} {time}");
+
                 if (sr)
                 {
-                    Console.Write($"{GetRequestCode(flight),-20}");
+                    Console.Write($"{GetRequestCode(flight),-30}");
                 }
                 if (bg)
                 {
-                    Console.Write($"{GetBoardingGate(flight)}");
+                    foreach (string gate in GetBoardingGate(flight))
+                    {
+                        Console.Write(gate + " ");
+                    }
                 }
                 return;
             }
@@ -502,7 +508,7 @@ void DisplayScheduledFlights(Dictionary<string, Flight> FlightDict)
         Console.WriteLine($"{flight.FlightNumber,-17}{AirlineDict[flight.FlightNumber[0..2]].Name,-20}{flight.Origin,-20}{flight.Destination,-20}{flight.ExpectedTime,-35}{flight.Status,-15}{boardingGate?.GateName ?? "Unassigned",-15}\n");
     }
 }
-DisplayScheduledFlights(FlightDict);
+//DisplayScheduledFlights(FlightDict);
 
 BoardingGate? FindBoardingGateByFlightNumber(Dictionary<string, Flight> FlightDict, Terminal Terminal5, Flight targetFlight)
 {
