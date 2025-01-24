@@ -462,22 +462,6 @@ void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string,
     }
 }
 
-//string[]? GetBoardingGate(Flight flight)
-//{
-//    if (flight is CFFTFlight)
-//    {
-//        return new string[] { "B1", "B2", "B3", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18", "C19", "C20", "C21", "C22" };
-//    }
-//    else if (flight is DDJBFlight)
-//    {
-//        return new string[] { "A10", "A11", "A12", "A13", "A20", "A21", "A22", "B10", "B11", "B12" };
-//    }
-//    else if (flight is LWTTFlight)
-//    {
-//        return new string[] { "A1", "A2", "A20", "A21", "A22", "C14", "C15", "C16", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10", "B11", "B12", "B13", "B14", "B15", "B16", "B17", "B18", "B19", "B20", "B21", "B22" };
-//    }
-//    return null;
-//}
 
 string GetRequestCode(Flight flight)
 {
@@ -503,7 +487,7 @@ string GetRequestCode(Flight flight)
 // 8 Modify flight details
 ModifyFlightUserInput(Terminal5, FlightDict);
 
-Airline DisplayFullFlightFromAirline(Terminal terminal)
+Airline? DisplayFullFlightFromAirline(Terminal terminal)
 {
     string? code = null;
     while (true)
@@ -594,12 +578,31 @@ Airline DisplayFullFlightFromAirline(Terminal terminal)
 
 }
 
+
+BoardingGate? GetBoardingGate(Terminal terminal, Flight flight)
+{
+    foreach (var kvp in terminal.BoardingGates)
+    {
+        if (kvp.Value.Flight?.FlightNumber == flight.FlightNumber)
+        {
+            return kvp.Value;
+        }
+    }
+
+    return null;
+}
+
+
 void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightDict)
 {
     while (true)
     {
         DisplayAirline(terminal);
-        Airline airline = DisplayFullFlightFromAirline(Terminal5);
+        Airline? airline = DisplayFullFlightFromAirline(Terminal5);
+        if (airline == null)
+        {
+            continue;
+        }
         Console.WriteLine("Enter flight code to modify flight");
         string? input = Console.ReadLine();
         if (input != null)
@@ -634,23 +637,71 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
 
         if (modifyInput == "1")
         {
-            ModifyFlightInfo(terminal, flight, FlightDict);
+            ModifyFlightInfo(terminal, flight, FlightDict, airline);
+            return;
         }
         else if (modifyInput == "2")
         {
-
+            DeleteFlight(terminal, flight, FlightDict);
+            return;
         }
         else
         {
             Console.WriteLine("Invalid choice");
             continue;
         }
+    }
         
 
+}
+
+void DeleteFlight(Terminal terminal, Flight flight, Dictionary<string, Flight> FlightDict)
+{
+    Console.WriteLine($"Are you sure you want to delete Flight Number: {flight.FlightNumber}? (Y/N)");
+    string confirmation = Console.ReadLine()?.Trim().ToUpper();
+
+    if (confirmation == "Y")
+    {
+        if (terminal.Flights.ContainsKey(flight.FlightNumber))
+        {
+            terminal.Flights.Remove(flight.FlightNumber);
+            Console.WriteLine("Flight removed from terminal.");
+        }
+
+        foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
+        {
+            Airline airline = kvp.Value;
+            if (airline.Flights.ContainsKey(flight.FlightNumber))
+            {
+                airline.Flights.Remove(flight.FlightNumber);
+                Console.WriteLine($"Flight removed from {airline.Name}.");
+                break;
+            }
+        }
+
+        foreach (KeyValuePair<string, BoardingGate> kvp in terminal.BoardingGates)
+        {
+            BoardingGate gate = kvp.Value;
+            if (gate.Flight?.FlightNumber == flight.FlightNumber)
+            {
+                gate.Flight = null;
+                Console.WriteLine("Flight unassigned from boarding gate");
+                break;
+            }
+        }
+
+        FlightDict.Remove(flight.FlightNumber);
+        Console.WriteLine("Flight deleted successfully");
+    }
+    else
+    {
+        Console.WriteLine("Flight deletion canceled");
     }
 }
 
-void ModifyFlightInfo(Terminal terminal, Flight flight, Dictionary<string, Flight> FlightDict)
+
+
+void ModifyFlightInfo(Terminal terminal, Flight flight, Dictionary<string, Flight> FlightDict, Airline airline)
 {
     while (true)
     {
@@ -660,23 +711,47 @@ void ModifyFlightInfo(Terminal terminal, Flight flight, Dictionary<string, Fligh
         if (input == "1")
         {
             ModifyBasicInformation(flight);
+            break;
         }
         else if (input == "2")
         {
             ModifyStatus(flight);
+            break;
         }
         else if (input == "3")
         {
             ModifySpecialRequestCode(flight, terminal, FlightDict);
+            break;
         }
         else if (input == "4")
         {
             ModifyBoardingGate(flight, terminal);
+            break;
         }
-
+        else
+        {
+            Console.WriteLine("Invalid Input");
+            continue;
+        }
     }
-    
 
+    Console.WriteLine("Flight updated!");
+    Console.WriteLine($"Flight number: {flight.FlightNumber}");
+    Console.WriteLine($"Airline name: {airline.Name}");
+    Console.WriteLine($"Origin: {flight.Origin}");
+    Console.WriteLine($"Destination: {flight.Destination}");
+    Console.WriteLine($"Expected Departure/Arrival Time: {flight.ExpectedTime}");
+    Console.WriteLine($"Status: {flight.Status}");
+    Console.WriteLine($"Special request code: {GetRequestCode(flight)}");
+    BoardingGate? boardingGate = GetBoardingGate(terminal, flight);
+    if (boardingGate != null)
+    {
+        Console.WriteLine($"Boarding gate: {boardingGate.GateName}");
+    }
+    else
+    {
+        Console.WriteLine($"Boarding gate: unassigned");
+    }
 }
 
 void ModifyBasicInformation(Flight flight)
@@ -846,10 +921,68 @@ void ModifySpecialRequestCode(Flight flight, Terminal terminal, Dictionary<strin
         }
     }
 
+    foreach (KeyValuePair<string, Flight> kvp in terminal.Flights)
+    {
+        Flight oldflight = kvp.Value;
+        if (oldflight.FlightNumber == flightNumber)
+        {
+            terminal.Flights[kvp.Key] = newFlight;
+            Console.WriteLine($"Flight with number {flightNumber} has been updated.");
+            break;
+        }
+    }
+
+
+
     if (flightDict.ContainsKey(flightNumber))
     {
         flightDict.Remove(flightNumber);
         flightDict[flightNumber] = newFlight;
+    }
+}
+
+void ModifyBoardingGate(Flight flight, Terminal terminal)
+{
+    while (true)
+    {
+        Console.WriteLine("Enter the new boarding gate number:");
+
+        string input = Console.ReadLine()?.Trim();
+
+        if (input == null || input == "")
+        {
+            continue;
+        }
+
+        if (!terminal.BoardingGates.ContainsKey(input))
+        {
+            continue;
+        }
+
+        // Get the current gate that the flight is assigned to
+        BoardingGate currentGate = null;
+        foreach (KeyValuePair<string, BoardingGate> kvp in terminal.BoardingGates)
+        {
+            BoardingGate gate = kvp.Value;
+            if (gate.Flight != null && gate.Flight.FlightNumber == flight.FlightNumber)
+            {
+                currentGate = gate;
+                break;
+            }
+        }
+
+        // Get the new gate where the flight will be assigned
+        BoardingGate newGate = terminal.BoardingGates[input];
+
+        // Free the current gate if it was assigned
+        if (currentGate != null)
+        {
+            currentGate.Flight = null;
+        }
+
+        newGate.Flight = flight;
+
+        break;
     }
 }
 
