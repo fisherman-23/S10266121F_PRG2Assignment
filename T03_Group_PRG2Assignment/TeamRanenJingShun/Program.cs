@@ -629,7 +629,7 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
         Console.WriteLine();
         Console.WriteLine($"[1] Modify flight {flight.FlightNumber}");
         Console.WriteLine($"[2] Delete flight {flight.FlightNumber}");
-        Console.WriteLine("Enter your choice: ");
+        Console.WriteLine("Choose an option: ");
         string? modifyInput = Console.ReadLine();
 
         if (modifyInput == "1")
@@ -652,8 +652,125 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
 
 void ModifyFlightInfo(Terminal terminal, Flight flight)
 {
+    while (true)
+    {
+        Console.WriteLine("1. Modify Basic Information\r\n2. Modify Status\r\n3. Modify Special Request Code\r\n4. Modify Boarding Gate");
+        Console.WriteLine("Choose an option:");
+        string? input = Console.ReadLine();
+        if (input == "1")
+        {
+            ModifyBasicInformation(flight);
+        }
+        if (input == "2")
+        {
+            ModifyStatus(flight);
+        }
+    }
     
+
 }
+
+void ModifyBasicInformation(Flight flight)
+{
+    while (true)
+    {
+        Console.WriteLine();
+        Console.WriteLine("Enter new Origin: ");
+        string? origin = Console.ReadLine();
+        if (origin == null)
+        {
+            Console.WriteLine("Invalid origin");
+            continue;
+        }
+
+        Console.WriteLine("Enter new Destination: ");
+        string? destination = Console.ReadLine();
+        if (destination == null)
+        {
+            Console.WriteLine("Invalid destination");
+            continue;
+        }
+
+        Console.WriteLine("Enter new Expected Departure/Arrival Time (dd/mm/yyyy hh:mm): ");
+        DateTime? expectedTime = null;
+        try
+        {
+            expectedTime = Convert.ToDateTime(Console.ReadLine());
+
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Invalid Input, use the correct format (dd/MM/yyyy HH:mm).");
+            continue;
+        }
+        if (expectedTime == null)
+        {
+            Console.WriteLine("Invalid Expected Departure/Arrival Time");
+            continue;
+        }
+
+        flight.Origin = origin;
+        flight.Destination = destination;
+        flight.ExpectedTime = expectedTime.Value;
+
+        return;
+    }
+}
+
+void ModifyStatus(Flight flight)
+{
+    while (true)
+    {
+        Console.WriteLine();
+        Console.WriteLine("Select a status for the flight:");
+        Console.WriteLine("1. On Time");
+        Console.WriteLine("2. Delayed");
+        Console.WriteLine("3. Boarding");
+        Console.WriteLine("4. Enter Custom Status");
+
+        string? input = Console.ReadLine();
+
+        if (input == "1")
+        {
+            flight.Status = "On Time";
+            break;
+        }
+        else if (input == "2")
+        {
+            flight.Status = "Delayed";
+            break;
+        }
+        else if (input == "3")
+        {
+            flight.Status = "Boarding";
+            break;
+        }
+        else if (input == "4")
+        {
+            Console.WriteLine("Enter custom status: ");
+            string? status = Console.ReadLine();
+
+            if (status != null)
+            {
+                flight.Status = status;
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Invalid custom status");
+                continue;
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid option. Pls enter a number between 1 and 4.");
+        }
+    }
+}
+
+
+
+
 
 
 // 9 Display scheduled flights from earliest to latest
