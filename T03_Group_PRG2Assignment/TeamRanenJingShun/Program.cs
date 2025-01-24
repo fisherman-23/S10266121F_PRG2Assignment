@@ -634,7 +634,7 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
 
         if (modifyInput == "1")
         {
-            ModifyFlightInfo(terminal, flight);
+            ModifyFlightInfo(terminal, flight, FlightDict);
         }
         else if (modifyInput == "2")
         {
@@ -650,7 +650,7 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
     }
 }
 
-void ModifyFlightInfo(Terminal terminal, Flight flight)
+void ModifyFlightInfo(Terminal terminal, Flight flight, Dictionary<string, Flight> FlightDict)
 {
     while (true)
     {
@@ -661,10 +661,19 @@ void ModifyFlightInfo(Terminal terminal, Flight flight)
         {
             ModifyBasicInformation(flight);
         }
-        if (input == "2")
+        else if (input == "2")
         {
             ModifyStatus(flight);
         }
+        else if (input == "3")
+        {
+            ModifySpecialRequestCode(flight, terminal, FlightDict);
+        }
+        else if (input == "4")
+        {
+            ModifyBoardingGate(flight, terminal);
+        }
+
     }
     
 
@@ -767,6 +776,84 @@ void ModifyStatus(Flight flight)
         }
     }
 }
+
+
+void ModifySpecialRequestCode(Flight flight, Terminal terminal, Dictionary<string, Flight> flightDict)
+{
+    string flightNumber = flight.FlightNumber;
+    Flight newFlight = null;
+
+    while (true)
+    {
+        Console.WriteLine("Please select the new special request code for the flight:");
+        Console.WriteLine("[1] CFFT Flight");
+        Console.WriteLine("[2] LWTT Flight");
+        Console.WriteLine("[3] DDJB Flight");
+        Console.WriteLine("[4] NORM Flight");
+
+        string input = Console.ReadLine()?.Trim();
+
+        if (input == null)
+        {
+            Console.WriteLine("Input cannot be null");
+            continue;
+        }
+
+        input = input.ToUpper();
+        if (input == "1")
+        {
+            newFlight = new CFFTFlight(flight.FlightNumber, flight.Origin, flight.Destination, flight.ExpectedTime, flight.Status);
+            break;
+        }
+        else if (input == "2")
+        {
+            newFlight = new LWTTFlight(flight.FlightNumber, flight.Origin, flight.Destination, flight.ExpectedTime, flight.Status);
+            break;
+        }
+        else if (input == "3")
+        {
+            newFlight = new DDJBFlight(flight.FlightNumber, flight.Origin, flight.Destination, flight.ExpectedTime, flight.Status);
+            break;
+        }
+        else if (input == "4")
+        {
+            newFlight = new NORMFlight(flight.FlightNumber, flight.Origin, flight.Destination, flight.ExpectedTime, flight.Status);
+            break;
+        }
+        else
+        {
+            Console.WriteLine("Invalid input");
+            continue;
+        }
+    }
+
+    foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
+    {
+        Airline airline = kvp.Value;
+        if (airline.Flights.ContainsKey(flightNumber))
+        {
+            airline.Flights.Remove(flightNumber);
+            airline.Flights[flightNumber] = newFlight;
+        }
+    }
+
+    foreach (KeyValuePair<string, BoardingGate> kvp in terminal.BoardingGates)
+    {
+        BoardingGate gate = kvp.Value;
+        if (gate.Flight != null && gate.Flight.FlightNumber == flightNumber)
+        {
+            gate.Flight = newFlight;
+        }
+    }
+
+    if (flightDict.ContainsKey(flightNumber))
+    {
+        flightDict.Remove(flightNumber);
+        flightDict[flightNumber] = newFlight;
+    }
+}
+
+
 
 
 
