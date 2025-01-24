@@ -334,7 +334,7 @@ void DisplayAirline(Terminal terminal)
     }
 }
 
-void DisplayFlightFromAirline(Terminal terminal)
+Airline DisplayFlightFromAirline(Terminal terminal)
 {
     string? code = null;
     while (true)
@@ -376,9 +376,8 @@ void DisplayFlightFromAirline(Terminal terminal)
                     Flight flight = kvp.Value;
                     Console.WriteLine($"{flight.FlightNumber, -15} {flight.Origin, -25} {flight.Destination, -20}");
                 }
-                DisplayFlightDetails(airline);
+                return airline;
             }
-            break;
         }
         else
         {
@@ -389,9 +388,10 @@ void DisplayFlightFromAirline(Terminal terminal)
 
 }
 
-//Terminal5.AddAirline(al);
+Terminal5.AddAirline(al);
 //DisplayAirline(Terminal5);
-//DisplayFlightFromAirline(Terminal5);
+//DisplayFlightDetails(DisplayFlightFromAirline(Terminal5));
+
 
 void DisplayFlightDetails(Airline airline)
 {
@@ -489,6 +489,13 @@ string GetRequestCode(Flight flight)
         return "NORM";
     }
 }
+
+
+// 8 Modify flight details
+DisplayAirline(Terminal5);
+DisplayFlightFromAirline(Terminal5);
+
+
 
 // 9 Display scheduled flights from earliest to latest
 
