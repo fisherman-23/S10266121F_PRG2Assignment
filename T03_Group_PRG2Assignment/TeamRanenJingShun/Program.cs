@@ -95,9 +95,18 @@ void DisplayFlights(Dictionary<string, Flight> FlightDict, Dictionary<string, Ai
         Console.WriteLine($"{kvp.Value.FlightNumber,-17}{AirlineDict[kvp.Value.FlightNumber[0..2]].Name,-20}{kvp.Value.Origin,-20}{kvp.Value.Destination,-20}{kvp.Value.ExpectedTime,-30}");
         Console.WriteLine();
     }
-}   
+}
 //DisplayFlights(FlightDict, AirlineDict);
 
+// Add flights to airline
+void AddFlightsToAirline(Dictionary<string, Airline> AirlineDict, Dictionary<string, Flight> FlightDict)
+{
+    foreach (KeyValuePair<string, Flight> kvp in FlightDict)
+    {
+        AirlineDict[kvp.Value.FlightNumber[0..2]].AddFlight(kvp.Value);
+    }
+}
+AddFlightsToAirline(AirlineDict, FlightDict);
 
 //4 List all boarding gates
 Terminal Terminal5 = new Terminal("Terminal5");
@@ -257,7 +266,7 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
 //AssignBoardingGateToFlight(Terminal5, FlightDict, BoardingGateDict);
 
 //6 Create a new flight
-void CreateNewFlight(Dictionary<string, Flight> FlightDict)
+void CreateNewFlight(Dictionary<string, Flight> FlightDict, Dictionary<string, Airline> AirlineDict)
 {
     while (true)
     {
@@ -276,6 +285,7 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict)
         {
             Flight flight = new NORMFlight(flightNumber, origin, destination, expectedTime, "On Time");
             FlightDict.Add(flightNumber, flight);
+            AirlineDict[flightNumber[0..2]].AddFlight(flight);
             // Add to flights.csv
             File.AppendAllText("assets/flights.csv", $"{flightNumber},{origin},{destination},{expectedTime},\n");
         }
@@ -283,6 +293,7 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict)
         {
             Flight flight = new CFFTFlight(flightNumber, origin, destination, expectedTime, "On Time");
             FlightDict.Add(flightNumber, flight);
+            AirlineDict[flightNumber[0..2]].AddFlight(flight);
             // Add to flights.csv
             File.AppendAllText("assets/flights.csv", $"{flightNumber},{origin},{destination},{expectedTime},CFFT\n");
         }
@@ -291,6 +302,7 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict)
         {
             Flight flight = new DDJBFlight(flightNumber, origin, destination, expectedTime, "On Time");
             FlightDict.Add(flightNumber, flight);
+            AirlineDict[flightNumber[0..2]].AddFlight(flight);
             // Add to flights.csv
             File.AppendAllText("assets/flights.csv", $"{flightNumber},{origin},{destination},{expectedTime},DDJB\n");
         }
@@ -298,6 +310,7 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict)
         {
             Flight flight = new LWTTFlight(flightNumber, origin, destination, expectedTime, "On Time");
             FlightDict.Add(flightNumber, flight);
+            AirlineDict[flightNumber[0..2]].AddFlight(flight);
             // Add to flights.csv
             File.AppendAllText("assets/flights.csv", $"{flightNumber},{origin},{destination},{expectedTime},LWTT\n");
         }
@@ -311,11 +324,13 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict)
         } else if (response == "N")
         {
             Console.WriteLine("Exiting...");
+            AddDataToTerminal(Terminal5);
             break;
         }
         else
         {
             Console.WriteLine("Not a valid option, exiting...");
+            AddDataToTerminal(Terminal5);
             break;
         }
     }
