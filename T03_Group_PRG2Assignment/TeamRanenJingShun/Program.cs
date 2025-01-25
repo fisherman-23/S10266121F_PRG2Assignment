@@ -2,35 +2,91 @@
 using System.Runtime.InteropServices;
 using TeamRanenJingShun;
 
-// Temporary code to test the classes
-Flight fl = new NORMFlight("SQ123", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-Flight fl2 = new CFFTFlight("SQ122", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-Flight fl3 = new CFFTFlight("SQ121", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-Flight fl4 = new CFFTFlight("SQ120", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-Flight fl5 = new CFFTFlight("SQ119", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-Flight fl6 = new CFFTFlight("SQ118", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Console.WriteLine(fl.CalculateFees());
-//Console.WriteLine(fl2.CalculateFees());
-Airline al = new Airline("SQ", "123");
-Airline al2 = new Airline("SQ", "122");
+//// Temporary code to test the classes
+//Flight fl = new NORMFlight("SQ123", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+//Flight fl2 = new CFFTFlight("SQ122", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+//Flight fl3 = new CFFTFlight("SQ121", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+//Flight fl4 = new CFFTFlight("SQ120", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+//Flight fl5 = new CFFTFlight("SQ119", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+//Flight fl6 = new CFFTFlight("SQ118", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
+////Console.WriteLine(fl.CalculateFees());
+////Console.WriteLine(fl2.CalculateFees());
+//Airline al = new Airline("SQ", "123");
+//Airline al2 = new Airline("SQ", "122");
 
-al.AddFlight(fl);
-al.AddFlight(fl2);
-al.AddFlight(fl3);
-al.AddFlight(fl4);
-al.AddFlight(fl5);
-al.AddFlight(fl6);
+//al.AddFlight(fl);
+//al.AddFlight(fl2);
+//al.AddFlight(fl3);
+//al.AddFlight(fl4);
+//al.AddFlight(fl5);
+//al.AddFlight(fl6);
 
 
 //Console.WriteLine(al.CalculateFees());
 //Console.WriteLine(al2.CalculateFees());
 
-//1 Load files (airlines and boarding gates)
-
+// Menu 
+// Initialise data
 string[] AirlinesCSVLines = File.ReadAllLines("assets/airlines.csv");
 Dictionary<string, Airline> AirlineDict = new Dictionary<string, Airline>();
 Dictionary<string, BoardingGate> BoardingGateDict = new Dictionary<string, BoardingGate>();
+LoadFiles(AirlineDict, BoardingGateDict);
 
+Dictionary<string, Flight> FlightDict = new Dictionary<string, Flight>();
+LoadFlights(FlightDict);
+
+Terminal Terminal5 = new Terminal("Terminal5");
+AddFlightsToAirline(AirlineDict, FlightDict);
+AddDataToTerminal(Terminal5);
+
+
+// Start Menu Loop
+bool loopContinue = true;
+while (loopContinue)
+{
+    Console.WriteLine("=============================================\nWelcome to Changi Airport Terminal 5\n=============================================");
+    Console.WriteLine("1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n");
+
+    Console.WriteLine("Please select your option: ");
+    string? input = Console.ReadLine().Trim();
+
+    switch (input)
+    {
+        case "1":
+            DisplayFlights(FlightDict, AirlineDict);
+            break;
+        case "2":
+            DisplayBoardingGates(Terminal5);
+            break;
+        case "3":
+            AssignBoardingGateToFlight(Terminal5, FlightDict, BoardingGateDict);
+            break;
+        case "4":
+            CreateNewFlight(FlightDict, AirlineDict);
+            break;
+        case "5":
+            DisplayAirline(Terminal5);
+            DisplayFlightDetails(DisplayFlightFromAirline(Terminal5), Terminal5, FlightDict);
+
+            break;
+        case "6":
+            ModifyFlightUserInput(Terminal5, FlightDict);
+            break;
+        case "7":
+            DisplayScheduledFlights(FlightDict);
+            break;
+        case "8":
+            Console.WriteLine("Exiting...");
+            loopContinue = false;
+            break;
+        default:
+            Console.WriteLine("Invalid option. Please try again.");
+            break;
+    }
+}
+
+
+//1 Load files (airlines and boarding gates)
 void LoadFiles(Dictionary<string, Airline> AirlineDict, Dictionary<string, BoardingGate> BoardingGateDict)
 {
     string[] AirlinesCSVLines = File.ReadAllLines("assets/airlines.csv");
@@ -49,7 +105,6 @@ void LoadFiles(Dictionary<string, Airline> AirlineDict, Dictionary<string, Board
         BoardingGateDict[line[0]] = boardingGate;
     }
 }
-LoadFiles(AirlineDict, BoardingGateDict);
 
 //2 Load files (flights)
 void LoadFlights(Dictionary<string, Flight> FlightDict)
@@ -82,8 +137,7 @@ void LoadFlights(Dictionary<string, Flight> FlightDict)
 
     }
 }
-Dictionary<string, Flight> FlightDict = new Dictionary<string, Flight>();
-LoadFlights(FlightDict);
+
 
 //3 List all flights
 void DisplayFlights(Dictionary<string, Flight> FlightDict, Dictionary<string, Airline> AirlineDict)
@@ -106,10 +160,8 @@ void AddFlightsToAirline(Dictionary<string, Airline> AirlineDict, Dictionary<str
         AirlineDict[kvp.Value.FlightNumber[0..2]].AddFlight(kvp.Value);
     }
 }
-AddFlightsToAirline(AirlineDict, FlightDict);
 
 //4 List all boarding gates
-Terminal Terminal5 = new Terminal("Terminal5");
 void AddDataToTerminal(Terminal terminal)
 {
     foreach (KeyValuePair<string, Airline> kvp in AirlineDict)
@@ -121,7 +173,6 @@ void AddDataToTerminal(Terminal terminal)
         terminal.AddBoardingGate(kvp.Value);
     }
 }
-AddDataToTerminal(Terminal5);
 
 void DisplayBoardingGates(Terminal terminal)
 {
@@ -382,7 +433,6 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict, Dictionary<string, A
         }
     }
 }
-CreateNewFlight(FlightDict, AirlineDict);
 
 
 // 7 Display full flight details from an airline
@@ -452,7 +502,7 @@ Airline DisplayFlightFromAirline(Terminal terminal)
 
 }
 
-Terminal5.AddAirline(al);
+//Terminal5.AddAirline(al);
 //DisplayAirline(Terminal5);
 //DisplayFlightDetails(DisplayFlightFromAirline(Terminal5), Terminal5, FlightDict);
 
@@ -547,7 +597,6 @@ string GetRequestCode(Flight flight)
 
 
 // 8 Modify flight details
-ModifyFlightUserInput(Terminal5, FlightDict);
 
 Airline? DisplayFullFlightFromAirline(Terminal terminal)
 {
