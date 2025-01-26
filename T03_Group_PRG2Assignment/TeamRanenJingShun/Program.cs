@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Runtime.InteropServices;
 using TeamRanenJingShun;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 //// Temporary code to test the classes
 //Flight fl = new NORMFlight("SQ123", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
@@ -45,7 +46,7 @@ bool loopContinue = true;
 while (loopContinue)
 {
     Console.WriteLine("=============================================\nWelcome to Changi Airport Terminal 5\n=============================================");
-    Console.WriteLine("1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n");
+    Console.WriteLine("1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates");
 
     Console.WriteLine("Please select your option: ");
     string? input = Console.ReadLine().Trim();
@@ -78,6 +79,9 @@ while (loopContinue)
         case "8":
             Console.WriteLine("Exiting...");
             loopContinue = false;
+            break;
+        case "9":
+            processUnassignedFlights(FlightDict, Terminal5);
             break;
         default:
             Console.WriteLine("Invalid option. Please try again.");
@@ -334,11 +338,12 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict, Dictionary<string, A
     char.IsLetter(flightNumber[1]) &&
     flightNumber.Substring(2).Trim().All(char.IsDigit))
             {
-                if (AirlineDict.ContainsKey(flightNumber[0..2])) {
+                if (AirlineDict.ContainsKey(flightNumber[0..2]))
+                {
                     flightNumber = flightNumber[0..2] + " " + flightNumber.Substring(2).Trim();
                     break;
                 }
-                
+
             }
             Console.WriteLine("Invalid flight number. Ensure it's not empty and starts with a valid airline code.");
         }
@@ -524,7 +529,7 @@ void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string,
             continue;
         }
 
-        foreach (KeyValuePair<String, Flight> kvp in airline.Flights)
+        foreach (KeyValuePair<string, Flight> kvp in airline.Flights)
         {
             Flight flight = kvp.Value;
             if (kvp.Key == code)
@@ -637,7 +642,7 @@ Airline? DisplayFullFlightFromAirline(Terminal terminal)
                 Console.WriteLine();
                 Console.WriteLine($"Full flight details for {airline.Name}");
                 Console.WriteLine($"{"Flight Number",-15} {"Airline Name",-25} {"Origin",-15} {"Destination",-15} {"Expected Date",-16} {"Expected Time",-17} {"Special Request Code",-25} {"Boarding Gate"}");
-                foreach (KeyValuePair<String, Flight> kvp in airline.Flights)
+                foreach (KeyValuePair<string, Flight> kvp in airline.Flights)
                 {
                     Flight flight = kvp.Value;
 
@@ -1147,3 +1152,83 @@ BoardingGate? FindBoardingGateByFlightNumber(Dictionary<string, Flight> FlightDi
         return null;
     }
 }
+
+// Advanced Feature (A): Ooi Jing Shun 
+void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Terminal5)
+{
+    Queue<Flight> unassignedFlights = new Queue<Flight>();
+    List<BoardingGate> unassignedGates = new List<BoardingGate>();
+    
+    foreach (KeyValuePair<string, Flight> kvp in FlightDict)
+    {
+        BoardingGate? result = FindBoardingGateByFlightNumber(FlightDict, Terminal5, kvp.Value);
+        if (result == null)
+        {
+            unassignedFlights.Enqueue(kvp.Value);
+        }
+    }
+    int initialFlightCount = unassignedFlights.Count;
+    Console.WriteLine($"Total number of flights that are unassigned to boarding gates: {initialFlightCount}");
+    foreach (KeyValuePair<string, BoardingGate> kvp in Terminal5.BoardingGates)
+    {
+        if (kvp.Value.Flight == null)
+        {
+            unassignedGates.Add(kvp.Value);
+        }
+    }
+    int initialGateCount = unassignedGates.Count;
+    Console.WriteLine($"Total number of unassigned boarding gates: {initialGateCount}");
+
+    int i = 0;
+    while (unassignedFlights.Count > 0 && unassignedGates.Count > 0)
+    {
+        Flight flight = unassignedFlights.Dequeue();
+        i = 0;
+        while (true)
+        {
+            if (IsGateCompatible(unassignedGates[i], flight))
+            {
+                Terminal5.BoardingGates[unassignedGates[i].GateName].Flight = flight;
+
+                Console.WriteLine($"Flight: {flight.FlightNumber}, Airline: {Terminal5.Airlines[flight.FlightNumber[0..2]].Name}, Origin: {flight.Origin}, Destination: {flight.Destination}, Departure/Arrival Time: {flight.ExpectedTime.ToString("dd/MM/yyyy hh:mm tt:00")}, has been assigned to gate {unassignedGates[i].GateName}\n");
+                unassignedGates.RemoveAt(i);
+                break;
+            }
+
+            else
+            {
+                i++;
+            }
+        }
+
+
+    }
+    Console.WriteLine($"Total number of flights that are processed and assigned to boarding gates: {initialFlightCount - unassignedFlights.Count}");
+    Console.WriteLine($"Total number of boarding gates that are processed and assigned to flights: {initialGateCount - unassignedGates.Count}");
+    if (FlightDict.Count - initialFlightCount == 0)
+    {
+        Console.WriteLine("100% of flights were processed automatically (no previously assigned flights).");
+    }
+    else
+    {
+        Console.WriteLine($"Percentage of flights processed automatically over those already assigned: {(double)(initialFlightCount - unassignedFlights.Count) / (FlightDict.Count - initialFlightCount):P2}");
+    }
+
+    if (Terminal5.BoardingGates.Count - initialGateCount == 0)
+    {
+        Console.WriteLine("100% of gates were processed automatically (no previously assigned gates).");
+    }
+    else
+    {
+        Console.WriteLine($"Percentage of gates processed automatically over those already assigned: {(double)(initialGateCount - unassignedGates.Count) / (Terminal5.BoardingGates.Count - initialGateCount):P2}");
+    }
+
+
+
+
+}
+
+bool IsGateCompatible(BoardingGate gate, Flight flight) =>
+    (flight is CFFTFlight && gate.SupportsCFFT) ||
+    (flight is DDJBFlight && gate.SupportsDDJB) ||
+    (flight is LWTTFlight && gate.SupportsLWTT) || (flight is NORMFlight && !gate.SupportsDDJB && !gate.SupportsCFFT && !gate.SupportsLWTT);
