@@ -181,7 +181,7 @@ void AddDataToTerminal(Terminal terminal)
 void DisplayBoardingGates(Terminal terminal)
 {
     Console.WriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
-    Console.WriteLine($"{"Gate Name",-15} {"DDJB",-20} {"CFFT",-20} {"LWTT"}");
+    Console.WriteLine($"{"Gate Name",-15} {"DDJB",-20} {"CFFT",-20} {"LWTT", -20} {"Flight assigned"}");
     foreach (KeyValuePair<string, BoardingGate> kvp in terminal.BoardingGates)
     {
 
@@ -201,9 +201,18 @@ void DisplayBoardingGates(Terminal terminal)
             LWTT = true;
         }
 
+        string? flightdisplay = null;
+        if (kvp.Value.Flight == null)
+        {
+            flightdisplay = "NIL";
+        }
+        else
+        {
+            flightdisplay = kvp.Value.Flight.FlightNumber;
+        }
 
 
-        Console.WriteLine($"{kvp.Value.GateName,-15} {DDJB,-20} {CFFT,-20} {LWTT}");
+        Console.WriteLine($"{kvp.Value.GateName,-15} {DDJB,-20} {CFFT,-20} {LWTT, -20} {flightdisplay}");
 
 
         //if (kvp.Value.Flight != null)
