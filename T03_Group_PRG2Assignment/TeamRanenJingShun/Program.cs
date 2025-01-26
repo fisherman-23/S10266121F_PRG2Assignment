@@ -46,7 +46,7 @@ bool loopContinue = true;
 while (loopContinue)
 {
     Console.WriteLine("=============================================\nWelcome to Changi Airport Terminal 5\n=============================================");
-    Console.WriteLine("1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates");
+    Console.WriteLine("1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates\n10. Display total fees per airline for the day");
 
     Console.WriteLine("Please select your option: ");
     string? input = Console.ReadLine().Trim();
@@ -82,6 +82,9 @@ while (loopContinue)
             break;
         case "9":
             processUnassignedFlights(FlightDict, Terminal5);
+            break;
+        case "10":
+            DisplayTotalFees(Terminal5, FlightDict);
             break;
         default:
             Console.WriteLine("Invalid option. Please try again.");
@@ -547,7 +550,7 @@ void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string,
                 Console.WriteLine($"Full flight details for {flight.FlightNumber}");
                 string date = flight.ExpectedTime.ToString("dd/MM/yyyy");
                 string time = flight.ExpectedTime.ToString("hh:mm tt") + ":00";
-                Console.WriteLine($"{"Flight Number",-15} {"Airline Name",-25} {"Origin",-15} {"Destination",-15} {"Expected Date",-16} {"Expected Time"}");
+                Console.WriteLine($"{"Flight Number",-15} {"Airline Name",-25} {"Origin",-15} {"Destination",-20} {"Expected Date",-16} {"Expected Time"}");
 
                 bool sr = false;
                 bool bg = false;
@@ -568,11 +571,11 @@ void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string,
                     bg = true;
                 }
                 Console.WriteLine();
-                Console.WriteLine($"{flight.FlightNumber,-15} {airline.Name,-25} {flight.Origin,-15} {flight.Destination,-15} {date,-16} {time}");
+                Console.WriteLine($"{flight.FlightNumber,-15} {airline.Name,-25} {flight.Origin,-15} {flight.Destination,-20} {date,-16} {time}");
 
                 if (sr)
                 {
-                    Console.Write($"{GetRequestCode(flight),-30}");
+                    Console.WriteLine($"{GetRequestCode(flight),-30}");
                 }
                 if (bg)
                 {
@@ -582,6 +585,7 @@ void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string,
                     //    Console.Write(gate + " ");
                     //}
                 }
+                Console.WriteLine();
                 return;
             }
         }
@@ -1241,3 +1245,60 @@ bool IsGateCompatible(BoardingGate gate, Flight flight) =>
     (flight is CFFTFlight && gate.SupportsCFFT) ||
     (flight is DDJBFlight && gate.SupportsDDJB) ||
     (flight is LWTTFlight && gate.SupportsLWTT) || (flight is NORMFlight && !gate.SupportsDDJB && !gate.SupportsCFFT && !gate.SupportsLWTT);
+
+
+
+// Advanced Feature (B): Ranen Sim
+void DisplayTotalFees(Terminal terminal, Dictionary<string, Flight> FlightDict)
+{
+    // Check if all flights have boarding gates assigned
+    foreach (KeyValuePair<string, Airline> airlineEntry in terminal.Airlines)
+    {
+        foreach (KeyValuePair<string, Flight> flightEntry in airlineEntry.Value.Flights)
+        {
+            if (FindBoardingGateByFlightNumber(FlightDict, terminal, flightEntry.Value) == null)
+            {
+                Console.WriteLine("Ensure all flights have boarding gates assigned first before displaying total fees");
+                return;
+            }
+        }
+    }
+
+    double subtotal = 0;
+    double discount = 0;
+    double total = 0;
+
+    Console.WriteLine("\n=== Airline Fee Breakdown ===");
+
+    foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
+    {
+        Airline airline = kvp.Value;
+        double airlineSubtotal = 0;
+
+        foreach (KeyValuePair<string, Flight> akvp in airline.Flights)
+        {
+            airlineSubtotal += akvp.Value.CalculateFees();
+        }
+
+        double airlineTotal = airline.CalculateFees();
+        double airlineDiscount = airlineSubtotal - airlineTotal;
+
+        Console.WriteLine($"\nAirline: {airline.Name}");
+        Console.WriteLine($"Subtotal Fees: ${airlineSubtotal:0.00}");
+        Console.WriteLine($"Total Discounts: ${airlineDiscount:0.00}");
+        Console.WriteLine($"Final Total: ${airlineTotal:0.00}");
+
+        subtotal += airlineSubtotal;
+        discount += airlineDiscount;
+        total += airlineTotal;
+    }
+
+    Console.WriteLine($"\n=== {terminal.TerminalName} Total ===");
+    Console.WriteLine($"Total Subtotal: ${subtotal:0.00}");
+    Console.WriteLine($"Total Discounts: ${discount:0.00}");
+    Console.WriteLine($"Final Collection: ${total:0.00}");
+
+    double discountPercent = (discount / total) * 100;
+    Console.WriteLine($"Discounts Percentage: {discountPercent:0.00}%");
+    Console.WriteLine();
+}
