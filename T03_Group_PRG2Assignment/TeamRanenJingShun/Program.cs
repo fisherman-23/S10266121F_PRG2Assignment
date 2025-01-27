@@ -121,12 +121,7 @@ void LoadFlights(Dictionary<string, Flight> FlightDict)
     {
         string[] value = line.Split(",");
         string requestCode = value[4];
-        if (requestCode == "")
-        {
-            Flight flight = new NORMFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
-            FlightDict.Add(value[0], flight);
-        }
-        else if (requestCode == "CFFT")
+        if (requestCode == "CFFT")
         {
             Flight flight = new CFFTFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
             FlightDict.Add(value[0], flight);
@@ -139,6 +134,11 @@ void LoadFlights(Dictionary<string, Flight> FlightDict)
         else if (requestCode == "LWTT")
         {
             Flight flight = new LWTTFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
+            FlightDict.Add(value[0], flight);
+        }
+        else
+        {
+            Flight flight = new NORMFlight(value[0], value[1], value[2], DateTime.Parse(value[3]), "On Time");
             FlightDict.Add(value[0], flight);
         }
 
@@ -273,7 +273,8 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
                 Console.WriteLine("This gate is already assigned to a flight.");
                 return;
 
-            } else if (!IsGateCompatible(Terminal5.BoardingGates[gateName], flight))
+            }
+            else if (!IsGateCompatible(Terminal5.BoardingGates[gateName], flight))
             {
                 Console.WriteLine("This gate is not compatible with the flight.");
                 return;
@@ -1192,7 +1193,7 @@ void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Te
 {
     Queue<Flight> unassignedFlights = new Queue<Flight>();
     List<BoardingGate> unassignedGates = new List<BoardingGate>();
-    
+
     foreach (KeyValuePair<string, Flight> kvp in FlightDict)
     {
         BoardingGate? result = FindBoardingGateByFlightNumber(FlightDict, Terminal5, kvp.Value);
