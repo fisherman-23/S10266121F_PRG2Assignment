@@ -1126,6 +1126,14 @@ void ModifyBoardingGate(Flight flight, Terminal terminal)
 
 void DisplayScheduledFlights(Dictionary<string, Flight> FlightDict)
 {
+    Dictionary<Type, string> requestCodeDict = new Dictionary<Type, string>
+    {
+        {typeof(CFFTFlight), "CFFT"},
+        {typeof(DDJBFlight), "DDJB"},
+        {typeof(LWTTFlight), "LWTT"},
+        {typeof(NORMFlight), "None"},
+        {typeof(Flight), "None"}
+    };
     List<Flight> flights = new List<Flight>();
     foreach (KeyValuePair<string, Flight> kvp in FlightDict)
     {
@@ -1133,11 +1141,11 @@ void DisplayScheduledFlights(Dictionary<string, Flight> FlightDict)
     }
     flights.Sort();
     Console.WriteLine("=============================================\r\nFlight Schedule for Changi Airport Terminal 5\r\n=============================================");
-    Console.WriteLine($"{"Flight Number",-17}{"Airline name",-20}{"Origin",-20}{"Destination",-20}{"Expected Departure/Arrival Time",-35}{"Status",-15}{"Boarding Gate",-15}");
+    Console.WriteLine($"{"Flight Number",-17}{"Airline name",-20}{"Origin",-20}{"Destination",-20}{"Expected Departure/Arrival Time",-35}{"Status",-15}{"Special Code",-15}{"Boarding Gate",-15}");
     foreach (Flight flight in flights)
     {
         BoardingGate? boardingGate = FindBoardingGateByFlightNumber(FlightDict, Terminal5, flight);
-        Console.WriteLine($"{flight.FlightNumber,-17}{AirlineDict[flight.FlightNumber[0..2]].Name,-20}{flight.Origin,-20}{flight.Destination,-20}{flight.ExpectedTime,-35}{flight.Status,-15}{boardingGate?.GateName ?? "Unassigned",-15}\n");
+        Console.WriteLine($"{flight.FlightNumber,-17}{AirlineDict[flight.FlightNumber[0..2]].Name,-20}{flight.Origin,-20}{flight.Destination,-20}{flight.ExpectedTime,-35}{flight.Status,-15}{requestCodeDict[flight.GetType()],-15}{boardingGate?.GateName ?? "Unassigned",-15}\n");
     }
 }
 //DisplayScheduledFlights(FlightDict);
