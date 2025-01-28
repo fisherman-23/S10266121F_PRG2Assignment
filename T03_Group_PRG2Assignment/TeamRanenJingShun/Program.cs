@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using TeamRanenJingShun;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -46,7 +47,7 @@ bool loopContinue = true;
 while (loopContinue)
 {
     Console.WriteLine("=============================================\nWelcome to Changi Airport Terminal 5\n=============================================");
-    Console.WriteLine("1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates\n10. Display total fees per airline for the day");
+    Console.WriteLine("1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates\n10. Display total fees per airline for the day\n11. Get arrival destination weather");
 
     Console.WriteLine("Please select your option: ");
     string? input = Console.ReadLine().Trim();
@@ -68,7 +69,6 @@ while (loopContinue)
         case "5":
             DisplayAirline(Terminal5);
             DisplayFlightDetails(DisplayFlightFromAirline(Terminal5), Terminal5, FlightDict);
-
             break;
         case "6":
             ModifyFlightUserInput(Terminal5, FlightDict);
@@ -85,6 +85,9 @@ while (loopContinue)
             break;
         case "10":
             DisplayTotalFees(Terminal5, FlightDict);
+            break;
+        case "11":
+            getWeatherGivenFlight(FlightDict);
             break;
         default:
             Console.WriteLine("Invalid option. Please try again.");
@@ -1312,4 +1315,186 @@ void DisplayTotalFees(Terminal terminal, Dictionary<string, Flight> FlightDict)
     double discountPercent = (discount / total) * 100;
     Console.WriteLine($"Discounts Percentage: {discountPercent:0.00}%");
     Console.WriteLine();
+}
+
+// Advanced Feature (C): Ooi Jing Shun (Weather of Destination upon Arrival)
+async Task<string> getWeatherFromCoordinates(double latitude, double longitude, DateTime dt) 
+{
+    List<string> weather = new List<string>();
+    using HttpClient client = new();
+    string forecast = $"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,cloudcover,precipitation_probability,weathercode";
+
+    try
+    {
+        var result = await ProcessDataAsync<Rootobject>(client, forecast);
+        var hourly = result.hourly;
+        var weatherCodes = new Dictionary<int, string>
+        {
+            { 0, "Clear sky" },
+            { 1, "Partly cloudy" },
+            { 2, "Partly cloudy" },
+            { 3, "Partly cloudy" },
+            { 45, "Fog" },
+            { 48, "Fog" },
+            { 51, "Drizzle" },
+            { 53, "Drizzle" },
+            { 55, "Drizzle" },
+            { 56, "Freezing drizzle" },
+            { 57, "Freezing drizzle" },
+            { 61, "Rain" },
+            { 63, "Rain" },
+            { 65, "Rain" },
+            { 66, "Freezing rain" },
+            { 67, "Freezing rain" },
+            { 71, "Snowfall" },
+            { 73, "Snowfall" },
+            { 75, "Snowfall" },
+            { 77, "Snow grains" },
+            { 80, "Rain showers" },
+            { 81, "Rain showers" },
+            { 82, "Rain showers" },
+            { 85, "Snow showers" },
+            { 86, "Snow showers" },
+            { 95, "Thunderstorm" },
+            { 96, "Thunderstorm with hail" },
+            { 99, "Thunderstorm with hail" }
+        };
+
+        string[] time = hourly.time;
+        float[] temperature = hourly.temperature_2m;
+        int[] cloudCover = hourly.cloudcover;
+        int[] precipitation = hourly.precipitation_probability;
+        int[] weatherCode = hourly.weathercode;
+        DateTime dateFromString;
+        for (int i = 0; i < time.Length; i++)
+        {
+            if (DateTime.TryParse(time[i], out dateFromString))
+            {
+
+                if ((Math.Abs((dateFromString - dt).TotalMinutes) <= 30))
+                {
+
+                    return $"{temperature[i]}°C, {weatherCodes[weatherCode[i]]}, {cloudCover[i]}% Cloud Cover, {precipitation[i]}% Chance of Precipitation";
+                }
+                else
+                {
+                }
+            }
+        }
+        return "NIL";
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Error: {e.Message}");
+        return "NIL";
+    }
+
+}
+void getWeatherGivenFlight(Dictionary<string, Flight> FlightDict)
+{
+    Console.WriteLine("Enter flight number to get weather forecast: ");
+    string flightNumber = Console.ReadLine();
+    if (FlightDict.ContainsKey(flightNumber))
+    {
+        try
+        {
+            Flight flight = FlightDict[flightNumber];
+            string destination = FlightDict[flightNumber].Destination;
+            Console.WriteLine($"Getting weather forecast for {destination}...");
+            List<string> coordinates = getCoordinates(destination).Result;
+            if (coordinates[0] != "NIL")
+            {
+                double latitude = Convert.ToDouble(coordinates[0]);
+                double longitude = Convert.ToDouble(coordinates[1]);
+
+                // Convert from Singapore Time (SST) to GMT (UTC)
+                TimeZoneInfo singaporeTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
+                DateTime gmtTime = TimeZoneInfo.ConvertTimeToUtc(flight.ExpectedTime, singaporeTimeZone);
+                Console.WriteLine($"SGT Time: {flight.ExpectedTime}");
+                Console.WriteLine($"GMT Time: {gmtTime}");
+
+                string weather = getWeatherFromCoordinates(latitude, longitude, gmtTime).Result;
+                Console.WriteLine($"Weather Conditions for {destination} Upon arrival time {flight.ExpectedTime}:\n{weather}");
+            }
+
+            else
+            {
+                Console.WriteLine("Weather not found");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error: {e.Message}");
+            Console.WriteLine("Weather not found");
+        }
+
+    }
+    else
+    {
+        Console.WriteLine("Flight not found");
+    }   
+}
+
+async Task<List<string>> getCoordinates(string destination)
+{
+    using HttpClient client = new();
+    client.DefaultRequestHeaders.Add("User-Agent", "YourAppName/1.0 (contact@yourdomain.com)");
+    string url = $"https://nominatim.openstreetmap.org/search?q={destination}&format=json";
+
+    try
+    {
+
+        var result = await ProcessDataAsync<List<Location>>(client, url);
+        var property = result;
+
+        if (property.Count == 0)
+        {
+            return new List<string> { "NIL", "NIL" };
+        }
+        else
+        {
+            string lat = result[0].lat;
+            string lon = result[0].lon;
+            return new List<string> { lat, lon };
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Error: {e.Message}");
+        return new List<string> { "NIL", "NIL" };
+    }
+}
+ static async Task<T> ProcessDataAsync<T>(HttpClient client, string url)
+{
+    try
+    {
+        // Get the JSON response as a string
+        using HttpResponseMessage response = await client.GetAsync(url);
+        response.EnsureSuccessStatusCode(); // Ensure the request was successful
+
+        string jsonResponse = await response.Content.ReadAsStringAsync();
+
+        // Print the JSON to verify its content
+        //Console.WriteLine("JSON Response:");
+        //Console.WriteLine(jsonResponse);
+
+        // Deserialize the JSON into the specified type
+        T obj = JsonSerializer.Deserialize<T>(jsonResponse);
+        return obj;
+    }
+    catch (HttpRequestException e)
+    {
+        Console.WriteLine($"HTTP Request Error: {e.Message}");
+        throw;
+    }
+    catch (JsonException e)
+    {
+        Console.WriteLine($"JSON Deserialization Error: {e.Message}");
+        throw;
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Unexpected Error: {e.Message}");
+        throw;
+    }
 }
