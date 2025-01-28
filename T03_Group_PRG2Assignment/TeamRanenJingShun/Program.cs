@@ -51,7 +51,7 @@ bool loopContinue = true;
 while (loopContinue)
 {
     speakWriteLine("=============================================\nWelcome to Changi Airport Terminal 5\n=============================================");
-    speakWriteLine($"1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates\n10. Display total fees per airline for the day\n12. Toggle text to speech: {SpeechToggle}");
+    speakWriteLine($"1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates\n10. Display total fees per airline for the day\n12. Toggle text to speech: {SpeechToggle}\n13. Modify text to speech settings");
 
     speakWriteLine("Please select your option: ");
     string? input = Console.ReadLine().Trim();
@@ -93,6 +93,9 @@ while (loopContinue)
             break;
         case "12":
             SpeechToggle = ToggleSpeak(SpeechToggle);
+            break;
+        case "13":
+            s = ModifySpeech(s);
             break;
         default:
             speakWriteLine("Invalid option. Please try again.");
@@ -1379,4 +1382,54 @@ bool ToggleSpeak(bool onOrOff)
         onOrOff = false;
     }
     return onOrOff;
+}
+
+SpeechSynthesizer ModifySpeech(SpeechSynthesizer s)
+{
+    while (true)
+    {
+        speakWriteLine("1. Change volume");
+        speakWriteLine("2. Change speech rate");
+
+        string? input = Console.ReadLine();
+
+        if (input == "1")
+        {
+            speakWriteLine("Set volume (0 - 100): ");
+            string? volume = Console.ReadLine();
+
+            try
+            {
+                s.Volume = Convert.ToInt32(volume);
+            }
+            catch
+            {
+                speakWriteLine("Invalid input");
+                continue;
+            }
+            speakWriteLine("Speech volume updated successfully");
+            return s;
+        }
+        else if (input == "2")
+        {
+            speakWriteLine("Set speech rate (-10 - 10): ");
+            string? rate = Console.ReadLine();
+            try
+            {
+                s.Rate = Convert.ToInt32(rate);
+            }
+            catch
+            {
+                speakWriteLine("Invalid input");
+                continue;
+            }
+            speakWriteLine("Speech rate updated successfully");
+            return s;
+        }
+        else
+        {
+            speakWriteLine("Invalid input");
+            continue;
+        }
+    }
 }
