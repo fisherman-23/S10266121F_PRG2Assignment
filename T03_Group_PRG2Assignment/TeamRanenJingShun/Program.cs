@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using TeamRanenJingShun;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Speech.Synthesis;
 
 //// Temporary code to test the classes
 //Flight fl = new NORMFlight("SQ123", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
@@ -85,6 +86,8 @@ while (loopContinue)
             break;
         case "10":
             DisplayTotalFees(Terminal5, FlightDict);
+            break;
+        case "12":
             break;
         default:
             Console.WriteLine("Invalid option. Please try again.");
@@ -1312,4 +1315,25 @@ void DisplayTotalFees(Terminal terminal, Dictionary<string, Flight> FlightDict)
     double discountPercent = (discount / total) * 100;
     Console.WriteLine($"Discounts Percentage: {discountPercent:0.00}%");
     Console.WriteLine();
+}
+
+
+
+
+
+
+
+// Additional feature (C): Ranen Sim
+
+SpeechSynthesizer s  = new SpeechSynthesizer();
+
+void speakWriteLine(string message)
+{
+    Console.WriteLine(message);
+    s.Speak(message);
+}
+void speakWrite(string message)
+{
+    Console.Write(message);
+    s.Speak(message);
 }
