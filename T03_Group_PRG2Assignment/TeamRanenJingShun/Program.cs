@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using TeamRanenJingShun;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Speech.Synthesis;
 
 //// Temporary code to test the classes
 //Flight fl = new NORMFlight("SQ123", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
@@ -10,8 +11,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 //Flight fl4 = new CFFTFlight("SQ120", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
 //Flight fl5 = new CFFTFlight("SQ119", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
 //Flight fl6 = new CFFTFlight("SQ118", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-////Console.WriteLine(fl.CalculateFees());
-////Console.WriteLine(fl2.CalculateFees());
+////speakWriteLine(fl.CalculateFees());
+////speakWriteLine(fl2.CalculateFees());
 //Airline al = new Airline("SQ", "123");
 //Airline al2 = new Airline("SQ", "122");
 
@@ -23,8 +24,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 //al.AddFlight(fl6);
 
 
-//Console.WriteLine(al.CalculateFees());
-//Console.WriteLine(al2.CalculateFees());
+
+//speakWriteLine(al.CalculateFees());
+//speakWriteLine(al2.CalculateFees());
 
 // Menu 
 // Initialise data
@@ -40,15 +42,18 @@ Terminal Terminal5 = new Terminal("Terminal5");
 AddFlightsToAirline(AirlineDict, FlightDict);
 AddDataToTerminal(Terminal5);
 
+SpeechSynthesizer s = new SpeechSynthesizer();
+bool SpeechToggle = false;
+
 
 // Start Menu Loop
 bool loopContinue = true;
 while (loopContinue)
 {
-    Console.WriteLine("=============================================\nWelcome to Changi Airport Terminal 5\n=============================================");
-    Console.WriteLine("1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates\n10. Display total fees per airline for the day");
+    speakWriteLine("=============================================\nWelcome to Changi Airport Terminal 5\n=============================================");
+    speakWriteLine($"1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates\n10. Display total fees per airline for the day\n12. Toggle text to speech: {SpeechToggle}\n13. Modify text to speech settings");
 
-    Console.WriteLine("Please select your option: ");
+    speakWriteLine("Please select your option: ");
     string? input = Console.ReadLine().Trim();
 
     switch (input)
@@ -77,7 +82,7 @@ while (loopContinue)
             DisplayScheduledFlights(FlightDict);
             break;
         case "8":
-            Console.WriteLine("Exiting...");
+            speakWriteLine("Exiting...");
             loopContinue = false;
             break;
         case "9":
@@ -86,8 +91,14 @@ while (loopContinue)
         case "10":
             DisplayTotalFees(Terminal5, FlightDict);
             break;
+        case "12":
+            SpeechToggle = ToggleSpeak(SpeechToggle);
+            break;
+        case "13":
+            s = ModifySpeech(s);
+            break;
         default:
-            Console.WriteLine("Invalid option. Please try again.");
+            speakWriteLine("Invalid option. Please try again.");
             break;
     }
 }
@@ -149,12 +160,12 @@ void LoadFlights(Dictionary<string, Flight> FlightDict)
 //3 List all flights
 void DisplayFlights(Dictionary<string, Flight> FlightDict, Dictionary<string, Airline> AirlineDict)
 {
-    Console.WriteLine("=============================================\r\nList of Flights for Changi Airport Terminal 5\r\n=============================================");
-    Console.WriteLine($"{"Flight Number",-17}{"Airline name",-20}{"Origin",-20}{"Destination",-20}{"Expected Departure/Arrival Time",-30}");
+    speakWriteLine("=============================================\r\nList of Flights for Changi Airport Terminal 5\r\n=============================================");
+    speakWriteLine($"{"Flight Number",-17}{"Airline name",-20}{"Origin",-20}{"Destination",-20}{"Expected Departure/Arrival Time",-30}");
     foreach (KeyValuePair<string, Flight> kvp in FlightDict)
     {
-        Console.WriteLine($"{kvp.Value.FlightNumber,-17}{AirlineDict[kvp.Value.FlightNumber[0..2]].Name,-20}{kvp.Value.Origin,-20}{kvp.Value.Destination,-20}{kvp.Value.ExpectedTime,-30}");
-        Console.WriteLine();
+        speakWriteLine($"{kvp.Value.FlightNumber,-17}{AirlineDict[kvp.Value.FlightNumber[0..2]].Name,-20}{kvp.Value.Origin,-20}{kvp.Value.Destination,-20}{kvp.Value.ExpectedTime,-30}");
+        speakWriteLine();
     }
 }
 //DisplayFlights(FlightDict, AirlineDict);
@@ -183,8 +194,8 @@ void AddDataToTerminal(Terminal terminal)
 
 void DisplayBoardingGates(Terminal terminal)
 {
-    Console.WriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
-    Console.WriteLine($"{"Gate Name",-15} {"DDJB",-20} {"CFFT",-20} {"LWTT",-20} {"Flight assigned"}");
+    speakWriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
+    speakWriteLine($"{"Gate Name",-15} {"DDJB",-20} {"CFFT",-20} {"LWTT",-20} {"Flight assigned"}");
     foreach (KeyValuePair<string, BoardingGate> kvp in terminal.BoardingGates)
     {
 
@@ -215,19 +226,19 @@ void DisplayBoardingGates(Terminal terminal)
         }
 
 
-        Console.WriteLine($"{kvp.Value.GateName,-15} {DDJB,-20} {CFFT,-20} {LWTT,-20} {flightdisplay}");
+        speakWriteLine($"{kvp.Value.GateName,-15} {DDJB,-20} {CFFT,-20} {LWTT,-20} {flightdisplay}");
 
 
         //if (kvp.Value.Flight != null)
         //{
-        //    Console.WriteLine($"Assigned Flight Number: {kvp.Value.Flight.FlightNumber}");
+        //    speakWriteLine($"Assigned Flight Number: {kvp.Value.Flight.FlightNumber}");
         //}
         //else
         //{
-        //    Console.WriteLine("No flight assigned to this gate.");
+        //    speakWriteLine("No flight assigned to this gate.");
         //}
 
-        Console.WriteLine();
+        speakWriteLine();
     }
 
 }
@@ -245,38 +256,38 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
         {typeof(NORMFlight), "None"},
         {typeof(Flight), "None"}
     };
-    Console.Write("Enter Flight Number: ");
+    speakWrite("Enter Flight Number: ");
     string flightNumber = Console.ReadLine()?.Trim();
     if (FlightDict.ContainsKey(flightNumber))
     {
         Flight flight = FlightDict[flightNumber];
-        Console.WriteLine($"Flight Number: {flight.FlightNumber}");
-        Console.WriteLine($"Origin: {flight.Origin}");
-        Console.WriteLine($"Destination: {flight.Destination}");
-        Console.WriteLine($"Expected Time: {flight.ExpectedTime}");
-        Console.WriteLine($"Special Request Code: {requestCodeDict[flight.GetType()]}\n");
+        speakWriteLine($"Flight Number: {flight.FlightNumber}");
+        speakWriteLine($"Origin: {flight.Origin}");
+        speakWriteLine($"Destination: {flight.Destination}");
+        speakWriteLine($"Expected Time: {flight.ExpectedTime}");
+        speakWriteLine($"Special Request Code: {requestCodeDict[flight.GetType()]}\n");
 
-        Console.Write("Enter Boarding Gate Name: ");
+        speakWrite("Enter Boarding Gate Name: ");
         string gateName = Console.ReadLine()?.Trim();
         if (BoardingGateDict.ContainsKey(gateName))
         {
 
 
-            Console.WriteLine($"Boarding Gate Name: {gateName}");
-            Console.WriteLine($"Supports DDJB: {BoardingGateDict[gateName].SupportsDDJB}");
-            Console.WriteLine($"Supports CFFT: {BoardingGateDict[gateName].SupportsCFFT}");
-            Console.WriteLine($"Supports LWTT: {BoardingGateDict[gateName].SupportsLWTT}");
+            speakWriteLine($"Boarding Gate Name: {gateName}");
+            speakWriteLine($"Supports DDJB: {BoardingGateDict[gateName].SupportsDDJB}");
+            speakWriteLine($"Supports CFFT: {BoardingGateDict[gateName].SupportsCFFT}");
+            speakWriteLine($"Supports LWTT: {BoardingGateDict[gateName].SupportsLWTT}");
 
 
             if (Terminal5.BoardingGates[gateName].Flight != null)
             {
-                Console.WriteLine("This gate is already assigned to a flight.");
+                speakWriteLine("This gate is already assigned to a flight.");
                 return;
 
             }
             else if (!IsGateCompatible(Terminal5.BoardingGates[gateName], flight))
             {
-                Console.WriteLine("This gate is not compatible with the flight.");
+                speakWriteLine("This gate is not compatible with the flight.");
                 return;
             }
 
@@ -286,14 +297,14 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
 
             while (true)
             {
-                Console.WriteLine("Would you like to update the status of the flight? (Y/N)");
+                speakWriteLine("Would you like to update the status of the flight? (Y/N)");
                 string response = Console.ReadLine()?.Trim();
 
                 if (response == "Y")
                 {
                     while (true)
                     {
-                        Console.WriteLine("1. Delayed\n2. Boarding\n3. On time");
+                        speakWriteLine("1. Delayed\n2. Boarding\n3. On time");
 
                         string status = Console.ReadLine();
                         if (status == "1")
@@ -314,7 +325,7 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
                         }
                         else
                         {
-                            Console.WriteLine("Invalid status.");
+                            speakWriteLine("Invalid status.");
                         }
 
                     }
@@ -327,22 +338,22 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
                 }
                 else
                 {
-                    Console.WriteLine("Invalid response.");
+                    speakWriteLine("Invalid response.");
                 }
             }
 
 
             Terminal5.BoardingGates[gateName].Flight = flight;
-            Console.WriteLine($"Flight {flight.FlightNumber} has been assigned to gate {gateName}.");
+            speakWriteLine($"Flight {flight.FlightNumber} has been assigned to gate {gateName}.");
         }
         else
         {
-            Console.WriteLine("Invalid gate name.");
+            speakWriteLine("Invalid gate name.");
         }
     }
     else
     {
-        Console.WriteLine("Invalid flight number.");
+        speakWriteLine("Invalid flight number.");
     }
 }
 //AssignBoardingGateToFlight(Terminal5, FlightDict, BoardingGateDict);
@@ -356,7 +367,7 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict, Dictionary<string, A
         string flightNumber;
         while (true)
         {
-            Console.Write("Enter Flight Number (e.g., AB 123): ");
+            speakWrite("Enter Flight Number (e.g., AB 123): ");
             flightNumber = Console.ReadLine()?.Trim();
             if (!string.IsNullOrEmpty(flightNumber) &&
     flightNumber.Length > 2 &&
@@ -371,51 +382,51 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict, Dictionary<string, A
                 }
 
             }
-            Console.WriteLine("Invalid flight number. Ensure it's not empty and starts with a valid airline code.");
+            speakWriteLine("Invalid flight number. Ensure it's not empty and starts with a valid airline code.");
         }
 
         // Validate Origin
         string origin;
         while (true)
         {
-            Console.Write("Enter Origin: ");
+            speakWrite("Enter Origin: ");
             origin = Console.ReadLine()?.Trim();
             if (!string.IsNullOrEmpty(origin))
                 break;
-            Console.WriteLine("Origin cannot be empty.");
+            speakWriteLine("Origin cannot be empty.");
         }
 
         // Validate Destination
         string destination;
         while (true)
         {
-            Console.Write("Enter Destination: ");
+            speakWrite("Enter Destination: ");
             destination = Console.ReadLine()?.Trim();
             if (!string.IsNullOrEmpty(destination))
                 break;
-            Console.WriteLine("Destination cannot be empty.");
+            speakWriteLine("Destination cannot be empty.");
         }
 
         // Validate Date and Time
         DateTime expectedTime;
         while (true)
         {
-            Console.Write("Enter Expected Departure/Arrival Time (dd/mm/yyyy hh:mm): ");
+            speakWrite("Enter Expected Departure/Arrival Time (dd/mm/yyyy hh:mm): ");
             string dateTimeInput = Console.ReadLine()?.Trim();
             if (DateTime.TryParseExact(dateTimeInput, "dd/MM/yyyy HH:mm", null, System.Globalization.DateTimeStyles.None, out expectedTime))
                 break;
-            Console.WriteLine("Invalid date/time format. Please use 'dd/mm/yyyy hh:mm'.");
+            speakWriteLine("Invalid date/time format. Please use 'dd/mm/yyyy hh:mm'.");
         }
 
         // Validate Special Request Code
         string requestCode;
         while (true)
         {
-            Console.Write("Enter Special Request Code (CFFT/DDJB/LWTT/None): ");
+            speakWrite("Enter Special Request Code (CFFT/DDJB/LWTT/None): ");
             requestCode = Console.ReadLine()?.Trim().ToUpper();
             if (requestCode == "CFFT" || requestCode == "DDJB" || requestCode == "LWTT" || requestCode == "NONE")
                 break;
-            Console.WriteLine("Invalid request code. Please enter 'CFFT', 'DDJB', 'LWTT', or 'None'.");
+            speakWriteLine("Invalid request code. Please enter 'CFFT', 'DDJB', 'LWTT', or 'None'.");
         }
 
         // Create flight based on request code
@@ -441,24 +452,24 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict, Dictionary<string, A
         AirlineDict[flightNumber[0..2]].AddFlight(flight);
         File.AppendAllText("assets/flights.csv", $"{flightNumber},{origin},{destination},{expectedTime},{(requestCode == "NONE" ? "" : requestCode)}\n");
 
-        Console.WriteLine($"Flight {flightNumber} has been added!");
+        speakWriteLine($"Flight {flightNumber} has been added!");
 
         // Confirm continuation
-        Console.WriteLine("Would you like to add another flight? (Y/N)");
+        speakWriteLine("Would you like to add another flight? (Y/N)");
         string response = Console.ReadLine()?.Trim().ToUpper();
         if (response == "Y")
         {
-            Console.WriteLine("Continuing...");
+            speakWriteLine("Continuing...");
         }
         else if (response == "N")
         {
-            Console.WriteLine("Exiting...");
+            speakWriteLine("Exiting...");
             AddDataToTerminal(Terminal5);
             break;
         }
         else
         {
-            Console.WriteLine("Invalid option. Exiting...");
+            speakWriteLine("Invalid option. Exiting...");
             AddDataToTerminal(Terminal5);
             break;
         }
@@ -469,12 +480,12 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict, Dictionary<string, A
 // 7 Display full flight details from an airline
 void DisplayAirline(Terminal terminal)
 {
-    Console.WriteLine();
-    Console.WriteLine("=============================================\r\nList of Airlines for Changi Airport Terminal 5\r\n=============================================");
-    Console.WriteLine($"{"Airline Code",-20} Airline Name");
+    speakWriteLine();
+    speakWriteLine("=============================================\r\nList of Airlines for Changi Airport Terminal 5\r\n=============================================");
+    speakWriteLine($"{"Airline Code",-20} Airline Name");
     foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
     {
-        Console.WriteLine($"{kvp.Key,-20} {kvp.Value.Name}");
+        speakWriteLine($"{kvp.Key,-20} {kvp.Value.Name}");
     }
 }
 
@@ -483,15 +494,15 @@ Airline DisplayFlightFromAirline(Terminal terminal)
     string? code = null;
     while (true)
     {
-        Console.WriteLine();
-        Console.WriteLine("Enter Airline Code: ");
+        speakWriteLine();
+        speakWriteLine("Enter Airline Code: ");
         try
         {
             code = Console.ReadLine().ToUpper();
         }
         catch
         {
-            Console.WriteLine("Invalid input, please try again.");
+            speakWriteLine("Invalid input, please try again.");
             continue;
         }
 
@@ -506,27 +517,27 @@ Airline DisplayFlightFromAirline(Terminal terminal)
         }
         if (airline != null)
         {
-            Console.WriteLine();
+            speakWriteLine();
             if (airline.Flights.Count == 0)
             {
-                Console.WriteLine($"No flights available for {airline.Name}");
+                speakWriteLine($"No flights available for {airline.Name}");
 
             }
             else
             {
-                Console.WriteLine($"{"Flight Number",-15} {"Origin",-20} {"Destination"}");
-                //Console.WriteLine("Departure/Arrival Time");
+                speakWriteLine($"{"Flight Number",-15} {"Origin",-20} {"Destination"}");
+                //speakWriteLine("Departure/Arrival Time");
                 foreach (KeyValuePair<string, Flight> kvp in airline.Flights)
                 {
                     Flight flight = kvp.Value;
-                    Console.WriteLine($"{flight.FlightNumber,-15} {flight.Origin,-20} {flight.Destination,-20}");
+                    speakWriteLine($"{flight.FlightNumber,-15} {flight.Origin,-20} {flight.Destination,-20}");
                 }
                 return airline;
             }
         }
         else
         {
-            Console.WriteLine("Airline not found");
+            speakWriteLine("Airline not found");
             continue;
         }
     }
@@ -543,15 +554,15 @@ void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string,
     string? code = null;
     while (true)
     {
-        Console.WriteLine();
-        Console.WriteLine("Enter flight number: ");
+        speakWriteLine();
+        speakWriteLine("Enter flight number: ");
         try
         {
             code = Console.ReadLine().ToUpper();
         }
         catch
         {
-            Console.WriteLine("Invalid input, please try again.");
+            speakWriteLine("Invalid input, please try again.");
             continue;
         }
 
@@ -560,46 +571,46 @@ void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string,
             Flight flight = kvp.Value;
             if (kvp.Key == code)
             {
-                Console.WriteLine();
-                Console.WriteLine($"Full flight details for {flight.FlightNumber}");
+                speakWriteLine();
+                speakWriteLine($"Full flight details for {flight.FlightNumber}");
                 string date = flight.ExpectedTime.ToString("dd/MM/yyyy");
                 string time = flight.ExpectedTime.ToString("hh:mm tt") + ":00";
-                Console.WriteLine($"{"Flight Number",-15} {"Airline Name",-25} {"Origin",-15} {"Destination",-20} {"Expected Date",-16} {"Expected Time"}");
+                speakWriteLine($"{"Flight Number",-15} {"Airline Name",-25} {"Origin",-15} {"Destination",-20} {"Expected Date",-16} {"Expected Time"}");
 
                 bool sr = false;
                 bool bg = false;
                 //BoardingGate? boardingGate = null;
                 if (flight.GetType() == typeof(CFFTFlight) || flight.GetType() == typeof(DDJBFlight) || flight.GetType() == typeof(LWTTFlight))
                 {
-                    Console.Write($"{"Special Request Code",-30}");
+                    speakWrite($"{"Special Request Code",-30}");
                     sr = true;
                 }
                 //if (!(flight.GetType() == typeof(NORMFlight))) {
-                //    Console.Write($"{"Boarding Gate", -15}");
+                //    speakWrite($"{"Boarding Gate", -15}");
                 //    bg = true;
                 //}
                 BoardingGate? boardingGate = FindBoardingGateByFlightNumber(FlightDict, terminal, flight);
                 if (boardingGate != null)
                 {
-                    Console.Write($"{"Boarding Gate",-15}");
+                    speakWrite($"{"Boarding Gate",-15}");
                     bg = true;
                 }
-                Console.WriteLine();
-                Console.WriteLine($"{flight.FlightNumber,-15} {airline.Name,-25} {flight.Origin,-15} {flight.Destination,-20} {date,-16} {time}");
+                speakWriteLine();
+                speakWriteLine($"{flight.FlightNumber,-15} {airline.Name,-25} {flight.Origin,-15} {flight.Destination,-20} {date,-16} {time}");
 
                 if (sr)
                 {
-                    Console.WriteLine($"{GetRequestCode(flight),-30}");
+                    speakWriteLine($"{GetRequestCode(flight),-30}");
                 }
                 if (bg)
                 {
-                    Console.WriteLine(FindBoardingGateByFlightNumber(FlightDict, terminal, flight));
+                    speakWriteLine($"{FindBoardingGateByFlightNumber(FlightDict, terminal, flight)}");
                     //foreach (string gate in GetBoardingGate(flight))
                     //{
-                    //    Console.Write(gate + " ");
+                    //    speakWrite(gate + " ");
                     //}
                 }
-                Console.WriteLine();
+                speakWriteLine();
                 return;
             }
         }
@@ -635,15 +646,15 @@ Airline? DisplayFullFlightFromAirline(Terminal terminal)
     string? code = null;
     while (true)
     {
-        Console.WriteLine();
-        Console.WriteLine("Enter Airline Code: ");
+        speakWriteLine();
+        speakWriteLine("Enter Airline Code: ");
         try
         {
             code = Console.ReadLine().ToUpper();
         }
         catch
         {
-            Console.WriteLine("Invalid input, please try again.");
+            speakWriteLine("Invalid input, please try again.");
             continue;
         }
 
@@ -658,17 +669,17 @@ Airline? DisplayFullFlightFromAirline(Terminal terminal)
         }
         if (airline != null)
         {
-            Console.WriteLine();
+            speakWriteLine();
             if (airline.Flights.Count == 0)
             {
-                Console.WriteLine($"No flights available for {airline.Name}");
+                speakWriteLine($"No flights available for {airline.Name}");
                 return null;
             }
             else
             {
-                Console.WriteLine();
-                Console.WriteLine($"Full flight details for {airline.Name}");
-                Console.WriteLine($"{"Flight Number",-15} {"Airline Name",-25} {"Origin",-15} {"Destination",-15} {"Expected Date",-16} {"Expected Time",-17} {"Special Request Code",-25} {"Boarding Gate"}");
+                speakWriteLine();
+                speakWriteLine($"Full flight details for {airline.Name}");
+                speakWriteLine($"{"Flight Number",-15} {"Airline Name",-25} {"Origin",-15} {"Destination",-15} {"Expected Date",-16} {"Expected Time",-17} {"Special Request Code",-25} {"Boarding Gate"}");
                 foreach (KeyValuePair<string, Flight> kvp in airline.Flights)
                 {
                     Flight flight = kvp.Value;
@@ -687,26 +698,26 @@ Airline? DisplayFullFlightFromAirline(Terminal terminal)
                     {
                         bg = true;
                     }
-                    Console.WriteLine();
-                    Console.Write($"{flight.FlightNumber,-15} {airline.Name,-25} {flight.Origin,-15} {flight.Destination,-15} {date,-16} {time,-18}");
+                    speakWriteLine();
+                    speakWrite($"{flight.FlightNumber,-15} {airline.Name,-25} {flight.Origin,-15} {flight.Destination,-15} {date,-16} {time,-18}");
 
                     if (sr)
                     {
-                        Console.Write($"{GetRequestCode(flight),-26}");
+                        speakWrite($"{GetRequestCode(flight),-26}");
                     }
                     else
                     {
-                        Console.Write($"{"NIL",-26}");
+                        speakWrite($"{"NIL",-26}");
                     }
                     if (bg)
                     {
-                        Console.Write(FindBoardingGateByFlightNumber(FlightDict, terminal, flight));
+                        speakWrite($"{FindBoardingGateByFlightNumber(FlightDict, terminal, flight)}");
                     }
                     else
                     {
-                        Console.Write("NIL");
+                        speakWrite("NIL");
                     }
-                    Console.WriteLine();
+                    speakWriteLine();
 
                 }
                 return airline;
@@ -714,7 +725,7 @@ Airline? DisplayFullFlightFromAirline(Terminal terminal)
         }
         else
         {
-            Console.WriteLine("Airline not found");
+            speakWriteLine("Airline not found");
             continue;
         }
     }
@@ -746,7 +757,7 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
         {
             continue;
         }
-        Console.WriteLine("Enter flight code to modify flight");
+        speakWriteLine("Enter flight code to modify flight");
         string? input = Console.ReadLine();
         if (input != null)
         {
@@ -754,7 +765,7 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
         }
         else
         {
-            Console.WriteLine("Input cannot be null.");
+            speakWriteLine("Input cannot be null.");
             continue;
         }
 
@@ -768,14 +779,14 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
         }
         if (flight == null)
         {
-            Console.WriteLine("Invalid flight code");
+            speakWriteLine("Invalid flight code");
             continue;
         }
 
-        Console.WriteLine();
-        Console.WriteLine($"[1] Modify flight {flight.FlightNumber}");
-        Console.WriteLine($"[2] Delete flight {flight.FlightNumber}");
-        Console.WriteLine("Choose an option: ");
+        speakWriteLine();
+        speakWriteLine($"[1] Modify flight {flight.FlightNumber}");
+        speakWriteLine($"[2] Delete flight {flight.FlightNumber}");
+        speakWriteLine("Choose an option: ");
         string? modifyInput = Console.ReadLine();
 
         if (modifyInput == "1")
@@ -790,7 +801,7 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
         }
         else
         {
-            Console.WriteLine("Invalid choice");
+            speakWriteLine("Invalid choice");
             continue;
         }
     }
@@ -800,7 +811,7 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
 
 void DeleteFlight(Terminal terminal, Flight flight, Dictionary<string, Flight> FlightDict)
 {
-    Console.WriteLine($"Are you sure you want to delete Flight Number: {flight.FlightNumber}? (Y/N)");
+    speakWriteLine($"Are you sure you want to delete Flight Number: {flight.FlightNumber}? (Y/N)");
     string confirmation = Console.ReadLine()?.Trim().ToUpper();
 
     if (confirmation == "Y")
@@ -808,7 +819,7 @@ void DeleteFlight(Terminal terminal, Flight flight, Dictionary<string, Flight> F
         if (terminal.Flights.ContainsKey(flight.FlightNumber))
         {
             terminal.Flights.Remove(flight.FlightNumber);
-            Console.WriteLine("Flight removed from terminal.");
+            speakWriteLine("Flight removed from terminal.");
         }
 
         foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
@@ -817,7 +828,7 @@ void DeleteFlight(Terminal terminal, Flight flight, Dictionary<string, Flight> F
             if (airline.Flights.ContainsKey(flight.FlightNumber))
             {
                 airline.Flights.Remove(flight.FlightNumber);
-                Console.WriteLine($"Flight removed from {airline.Name}.");
+                speakWriteLine($"Flight removed from {airline.Name}.");
                 break;
             }
         }
@@ -828,17 +839,17 @@ void DeleteFlight(Terminal terminal, Flight flight, Dictionary<string, Flight> F
             if (gate.Flight?.FlightNumber == flight.FlightNumber)
             {
                 gate.Flight = null;
-                Console.WriteLine("Flight unassigned from boarding gate");
+                speakWriteLine("Flight unassigned from boarding gate");
                 break;
             }
         }
 
         FlightDict.Remove(flight.FlightNumber);
-        Console.WriteLine("Flight deleted successfully");
+        speakWriteLine("Flight deleted successfully");
     }
     else
     {
-        Console.WriteLine("Flight deletion canceled");
+        speakWriteLine("Flight deletion canceled");
     }
 }
 
@@ -848,8 +859,8 @@ void ModifyFlightInfo(Terminal terminal, Flight flight, Dictionary<string, Fligh
 {
     while (true)
     {
-        Console.WriteLine("1. Modify Basic Information\r\n2. Modify Status\r\n3. Modify Special Request Code\r\n4. Modify Boarding Gate");
-        Console.WriteLine("Choose an option:");
+        speakWriteLine("1. Modify Basic Information\r\n2. Modify Status\r\n3. Modify Special Request Code\r\n4. Modify Boarding Gate");
+        speakWriteLine("Choose an option:");
         string? input = Console.ReadLine();
         if (input == "1")
         {
@@ -873,27 +884,27 @@ void ModifyFlightInfo(Terminal terminal, Flight flight, Dictionary<string, Fligh
         }
         else
         {
-            Console.WriteLine("Invalid Input");
+            speakWriteLine("Invalid Input");
             continue;
         }
     }
 
-    Console.WriteLine("Flight updated!");
-    Console.WriteLine($"Flight number: {flight.FlightNumber}");
-    Console.WriteLine($"Airline name: {airline.Name}");
-    Console.WriteLine($"Origin: {flight.Origin}");
-    Console.WriteLine($"Destination: {flight.Destination}");
-    Console.WriteLine($"Expected Departure/Arrival Time: {flight.ExpectedTime}");
-    Console.WriteLine($"Status: {flight.Status}");
-    Console.WriteLine($"Special request code: {GetRequestCode(flight)}");
+    speakWriteLine("Flight updated!");
+    speakWriteLine($"Flight number: {flight.FlightNumber}");
+    speakWriteLine($"Airline name: {airline.Name}");
+    speakWriteLine($"Origin: {flight.Origin}");
+    speakWriteLine($"Destination: {flight.Destination}");
+    speakWriteLine($"Expected Departure/Arrival Time: {flight.ExpectedTime}");
+    speakWriteLine($"Status: {flight.Status}");
+    speakWriteLine($"Special request code: {GetRequestCode(flight)}");
     BoardingGate? boardingGate = GetBoardingGate(terminal, flight);
     if (boardingGate != null)
     {
-        Console.WriteLine($"Boarding gate: {boardingGate.GateName}");
+        speakWriteLine($"Boarding gate: {boardingGate.GateName}");
     }
     else
     {
-        Console.WriteLine($"Boarding gate: unassigned");
+        speakWriteLine($"Boarding gate: unassigned");
     }
 }
 
@@ -901,24 +912,24 @@ void ModifyBasicInformation(Flight flight)
 {
     while (true)
     {
-        Console.WriteLine();
-        Console.WriteLine("Enter new Origin: ");
+        speakWriteLine();
+        speakWriteLine("Enter new Origin: ");
         string? origin = Console.ReadLine();
         if (origin == null)
         {
-            Console.WriteLine("Invalid origin");
+            speakWriteLine("Invalid origin");
             continue;
         }
 
-        Console.WriteLine("Enter new Destination: ");
+        speakWriteLine("Enter new Destination: ");
         string? destination = Console.ReadLine();
         if (destination == null)
         {
-            Console.WriteLine("Invalid destination");
+            speakWriteLine("Invalid destination");
             continue;
         }
 
-        Console.WriteLine("Enter new Expected Departure/Arrival Time (dd/mm/yyyy hh:mm): ");
+        speakWriteLine("Enter new Expected Departure/Arrival Time (dd/mm/yyyy hh:mm): ");
         DateTime? expectedTime = null;
         try
         {
@@ -927,12 +938,12 @@ void ModifyBasicInformation(Flight flight)
         }
         catch (FormatException)
         {
-            Console.WriteLine("Invalid Input, use the correct format (dd/MM/yyyy HH:mm).");
+            speakWriteLine("Invalid Input, use the correct format (dd/MM/yyyy HH:mm).");
             continue;
         }
         if (expectedTime == null)
         {
-            Console.WriteLine("Invalid Expected Departure/Arrival Time");
+            speakWriteLine("Invalid Expected Departure/Arrival Time");
             continue;
         }
 
@@ -948,12 +959,12 @@ void ModifyStatus(Flight flight)
 {
     while (true)
     {
-        Console.WriteLine();
-        Console.WriteLine("Select a status for the flight:");
-        Console.WriteLine("1. On Time");
-        Console.WriteLine("2. Delayed");
-        Console.WriteLine("3. Boarding");
-        Console.WriteLine("4. Enter Custom Status");
+        speakWriteLine();
+        speakWriteLine("Select a status for the flight:");
+        speakWriteLine("1. On Time");
+        speakWriteLine("2. Delayed");
+        speakWriteLine("3. Boarding");
+        speakWriteLine("4. Enter Custom Status");
 
         string? input = Console.ReadLine();
 
@@ -974,7 +985,7 @@ void ModifyStatus(Flight flight)
         }
         else if (input == "4")
         {
-            Console.WriteLine("Enter custom status: ");
+            speakWriteLine("Enter custom status: ");
             string? status = Console.ReadLine();
 
             if (status != null)
@@ -984,13 +995,13 @@ void ModifyStatus(Flight flight)
             }
             else
             {
-                Console.WriteLine("Invalid custom status");
+                speakWriteLine("Invalid custom status");
                 continue;
             }
         }
         else
         {
-            Console.WriteLine("Invalid option. Pls enter a number between 1 and 4.");
+            speakWriteLine("Invalid option. Pls enter a number between 1 and 4.");
         }
     }
 }
@@ -1003,17 +1014,17 @@ void ModifySpecialRequestCode(Flight flight, Terminal terminal, Dictionary<strin
 
     while (true)
     {
-        Console.WriteLine("Please select the new special request code for the flight:");
-        Console.WriteLine("[1] CFFT Flight");
-        Console.WriteLine("[2] LWTT Flight");
-        Console.WriteLine("[3] DDJB Flight");
-        Console.WriteLine("[4] NORM Flight");
+        speakWriteLine("Please select the new special request code for the flight:");
+        speakWriteLine("[1] CFFT Flight");
+        speakWriteLine("[2] LWTT Flight");
+        speakWriteLine("[3] DDJB Flight");
+        speakWriteLine("[4] NORM Flight");
 
         string input = Console.ReadLine()?.Trim();
 
         if (input == null)
         {
-            Console.WriteLine("Input cannot be null");
+            speakWriteLine("Input cannot be null");
             continue;
         }
 
@@ -1040,7 +1051,7 @@ void ModifySpecialRequestCode(Flight flight, Terminal terminal, Dictionary<strin
         }
         else
         {
-            Console.WriteLine("Invalid input");
+            speakWriteLine("Invalid input");
             continue;
         }
     }
@@ -1070,7 +1081,7 @@ void ModifySpecialRequestCode(Flight flight, Terminal terminal, Dictionary<strin
         if (oldflight.FlightNumber == flightNumber)
         {
             terminal.Flights[kvp.Key] = newFlight;
-            Console.WriteLine($"Flight with number {flightNumber} has been updated.");
+            speakWriteLine($"Flight with number {flightNumber} has been updated.");
             break;
         }
     }
@@ -1088,7 +1099,7 @@ void ModifyBoardingGate(Flight flight, Terminal terminal)
 {
     while (true)
     {
-        Console.WriteLine("Enter the new boarding gate number:");
+        speakWriteLine("Enter the new boarding gate number:");
 
         string input = Console.ReadLine()?.Trim();
 
@@ -1154,12 +1165,12 @@ void DisplayScheduledFlights(Dictionary<string, Flight> FlightDict)
         flights.Add(kvp.Value);
     }
     flights.Sort();
-    Console.WriteLine("=============================================\r\nFlight Schedule for Changi Airport Terminal 5\r\n=============================================");
-    Console.WriteLine($"{"Flight Number",-17}{"Airline name",-20}{"Origin",-20}{"Destination",-20}{"Expected Departure/Arrival Time",-35}{"Status",-15}{"Special Code",-15}{"Boarding Gate",-15}");
+    speakWriteLine("=============================================\r\nFlight Schedule for Changi Airport Terminal 5\r\n=============================================");
+    speakWriteLine($"{"Flight Number",-17}{"Airline name",-20}{"Origin",-20}{"Destination",-20}{"Expected Departure/Arrival Time",-35}{"Status",-15}{"Special Code",-15}{"Boarding Gate",-15}");
     foreach (Flight flight in flights)
     {
         BoardingGate? boardingGate = FindBoardingGateByFlightNumber(FlightDict, Terminal5, flight);
-        Console.WriteLine($"{flight.FlightNumber,-17}{AirlineDict[flight.FlightNumber[0..2]].Name,-20}{flight.Origin,-20}{flight.Destination,-20}{flight.ExpectedTime,-35}{flight.Status,-15}{requestCodeDict[flight.GetType()],-15}{boardingGate?.GateName ?? "Unassigned",-15}\n");
+        speakWriteLine($"{flight.FlightNumber,-17}{AirlineDict[flight.FlightNumber[0..2]].Name,-20}{flight.Origin,-20}{flight.Destination,-20}{flight.ExpectedTime,-35}{flight.Status,-15}{requestCodeDict[flight.GetType()],-15}{boardingGate?.GateName ?? "Unassigned",-15}\n");
     }
 }
 //DisplayScheduledFlights(FlightDict);
@@ -1175,11 +1186,11 @@ BoardingGate? FindBoardingGateByFlightNumber(Dictionary<string, Flight> FlightDi
         {
             if (kvp.Value.Flight == flight)
             {
-                //Console.WriteLine($"Flight {flightNumber} is assigned to gate {kvp.Key}");
+                //speakWriteLine($"Flight {flightNumber} is assigned to gate {kvp.Key}");
                 return kvp.Value;
             }
         }
-        //Console.WriteLine($"Flight {flightNumber} is not assigned to any gate.");
+        //speakWriteLine($"Flight {flightNumber} is not assigned to any gate.");
         return null;
     }
     else
@@ -1203,7 +1214,7 @@ void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Te
         }
     }
     int initialFlightCount = unassignedFlights.Count;
-    Console.WriteLine($"Total number of flights that are unassigned to boarding gates: {initialFlightCount}");
+    speakWriteLine($"Total number of flights that are unassigned to boarding gates: {initialFlightCount}");
     foreach (KeyValuePair<string, BoardingGate> kvp in Terminal5.BoardingGates)
     {
         if (kvp.Value.Flight == null)
@@ -1212,7 +1223,7 @@ void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Te
         }
     }
     int initialGateCount = unassignedGates.Count;
-    Console.WriteLine($"Total number of unassigned boarding gates: {initialGateCount}");
+    speakWriteLine($"Total number of unassigned boarding gates: {initialGateCount}");
 
     int i = 0;
     while (unassignedFlights.Count > 0 && unassignedGates.Count > 0)
@@ -1225,7 +1236,7 @@ void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Te
             {
                 Terminal5.BoardingGates[unassignedGates[i].GateName].Flight = flight;
 
-                Console.WriteLine($"Flight: {flight.FlightNumber}, Airline: {Terminal5.Airlines[flight.FlightNumber[0..2]].Name}, Origin: {flight.Origin}, Destination: {flight.Destination}, Departure/Arrival Time: {flight.ExpectedTime.ToString("dd/MM/yyyy hh:mm tt:00")}, has been assigned to gate {unassignedGates[i].GateName}\n");
+                speakWriteLine($"Flight: {flight.FlightNumber}, Airline: {Terminal5.Airlines[flight.FlightNumber[0..2]].Name}, Origin: {flight.Origin}, Destination: {flight.Destination}, Departure/Arrival Time: {flight.ExpectedTime.ToString("dd/MM/yyyy hh:mm tt:00")}, has been assigned to gate {unassignedGates[i].GateName}\n");
                 unassignedGates.RemoveAt(i);
                 break;
             }
@@ -1238,24 +1249,24 @@ void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Te
 
 
     }
-    Console.WriteLine($"Total number of flights that are processed and assigned to boarding gates: {initialFlightCount - unassignedFlights.Count}");
-    Console.WriteLine($"Total number of boarding gates that are processed and assigned to flights: {initialGateCount - unassignedGates.Count}");
+    speakWriteLine($"Total number of flights that are processed and assigned to boarding gates: {initialFlightCount - unassignedFlights.Count}");
+    speakWriteLine($"Total number of boarding gates that are processed and assigned to flights: {initialGateCount - unassignedGates.Count}");
     if (FlightDict.Count - initialFlightCount == 0)
     {
-        Console.WriteLine("100% of flights were processed automatically (no previously assigned flights).");
+        speakWriteLine("100% of flights were processed automatically (no previously assigned flights).");
     }
     else
     {
-        Console.WriteLine($"Percentage of flights processed automatically over those already assigned: {(double)(initialFlightCount - unassignedFlights.Count) / (FlightDict.Count - initialFlightCount):P2}");
+        speakWriteLine($"Percentage of flights processed automatically over those already assigned: {(double)(initialFlightCount - unassignedFlights.Count) / (FlightDict.Count - initialFlightCount):P2}");
     }
 
     if (Terminal5.BoardingGates.Count - initialGateCount == 0)
     {
-        Console.WriteLine("100% of gates were processed automatically (no previously assigned gates).");
+        speakWriteLine("100% of gates were processed automatically (no previously assigned gates).");
     }
     else
     {
-        Console.WriteLine($"Percentage of gates processed automatically over those already assigned: {(double)(initialGateCount - unassignedGates.Count) / (Terminal5.BoardingGates.Count - initialGateCount):P2}");
+        speakWriteLine($"Percentage of gates processed automatically over those already assigned: {(double)(initialGateCount - unassignedGates.Count) / (Terminal5.BoardingGates.Count - initialGateCount):P2}");
     }
 
 
@@ -1278,7 +1289,7 @@ void DisplayTotalFees(Terminal terminal, Dictionary<string, Flight> FlightDict)
         {
             if (FindBoardingGateByFlightNumber(FlightDict, terminal, flightEntry.Value) == null)
             {
-                Console.WriteLine("Ensure all flights have boarding gates assigned first before displaying total fees");
+                speakWriteLine("Ensure all flights have boarding gates assigned first before displaying total fees");
                 return;
             }
         }
@@ -1286,7 +1297,7 @@ void DisplayTotalFees(Terminal terminal, Dictionary<string, Flight> FlightDict)
     double subtotal = 0;
     double discount = 0;
     double total = 0;
-    Console.WriteLine("\n=== Airline Fee Breakdown ===");
+    speakWriteLine("\n=== Airline Fee Breakdown ===");
     foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
     {
         Airline airline = kvp.Value;
@@ -1297,19 +1308,128 @@ void DisplayTotalFees(Terminal terminal, Dictionary<string, Flight> FlightDict)
         }
         double airlineTotal = airline.CalculateFees();
         double airlineDiscount = airlineSubtotal - airlineTotal;
-        Console.WriteLine($"\nAirline: {airline.Name}");
-        Console.WriteLine($"Subtotal Fees: ${airlineSubtotal:0.00}");
-        Console.WriteLine($"Total Discounts: ${airlineDiscount:0.00}");
-        Console.WriteLine($"Final Total: ${airlineTotal:0.00}");
+        speakWriteLine($"\nAirline: {airline.Name}");
+        speakWriteLine($"Subtotal Fees: ${airlineSubtotal:0.00}");
+        speakWriteLine($"Total Discounts: ${airlineDiscount:0.00}");
+        speakWriteLine($"Final Total: ${airlineTotal:0.00}");
         subtotal += airlineSubtotal;
         discount += airlineDiscount;
         total += airlineTotal;
     }
-    Console.WriteLine($"\n=== {terminal.TerminalName} Total ===");
-    Console.WriteLine($"Total Subtotal: ${subtotal:0.00}");
-    Console.WriteLine($"Total Discounts: ${discount:0.00}");
-    Console.WriteLine($"Final Collection: ${total:0.00}");
+    speakWriteLine($"\n=== {terminal.TerminalName} Total ===");
+    speakWriteLine($"Total Subtotal: ${subtotal:0.00}");
+    speakWriteLine($"Total Discounts: ${discount:0.00}");
+    speakWriteLine($"Final Collection: ${total:0.00}");
     double discountPercent = (discount / total) * 100;
-    Console.WriteLine($"Discounts Percentage: {discountPercent:0.00}%");
-    Console.WriteLine();
+    speakWriteLine($"Discounts Percentage: {discountPercent:0.00}%");
+    speakWriteLine();
+}
+
+
+
+
+
+
+
+// Additional feature (C): Ranen Sim
+
+
+void speakWriteLine(string message = "")
+{
+
+    if (!SpeechToggle)
+    {
+        Console.WriteLine(message);
+        return;
+    }
+    
+    Console.WriteLine(message);
+
+    message = message.Replace("=", "");
+    message = message.Replace("*", "");
+    message = message.Replace("_", "");
+    message = message.Replace("-", "");
+    message = message.Replace("  ", " ");
+    message = message.Trim();
+    s.Speak(message);
+}
+void speakWrite(string message = "")
+{
+    if (!SpeechToggle)
+    {
+        Console.Write(message);
+        return;
+    }
+    Console.Write(message);
+
+    message = message.Replace("=", "");
+    message = message.Replace("*", "");
+    message = message.Replace("_", "");
+    message = message.Replace("-", "");
+    message = message.Replace("  ", " ");
+    message = message.Trim();
+    s.Speak(message);
+}
+
+bool ToggleSpeak(bool onOrOff)
+{
+    if (!onOrOff)
+    {
+        onOrOff = true;
+    }
+    else
+    {
+        onOrOff = false;
+    }
+    return onOrOff;
+}
+
+SpeechSynthesizer ModifySpeech(SpeechSynthesizer s)
+{
+    while (true)
+    {
+        speakWriteLine("1. Change volume");
+        speakWriteLine("2. Change speech rate");
+
+        string? input = Console.ReadLine();
+
+        if (input == "1")
+        {
+            speakWriteLine("Set volume (0 - 100): ");
+            string? volume = Console.ReadLine();
+
+            try
+            {
+                s.Volume = Convert.ToInt32(volume);
+            }
+            catch
+            {
+                speakWriteLine("Invalid input");
+                continue;
+            }
+            speakWriteLine("Speech volume updated successfully");
+            return s;
+        }
+        else if (input == "2")
+        {
+            speakWriteLine("Set speech rate (-10 - 10): ");
+            string? rate = Console.ReadLine();
+            try
+            {
+                s.Rate = Convert.ToInt32(rate);
+            }
+            catch
+            {
+                speakWriteLine("Invalid input");
+                continue;
+            }
+            speakWriteLine("Speech rate updated successfully");
+            return s;
+        }
+        else
+        {
+            speakWriteLine("Invalid input");
+            continue;
+        }
+    }
 }
