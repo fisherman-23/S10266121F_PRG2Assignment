@@ -23,7 +23,6 @@ using System.Speech.Synthesis;
 //al.AddFlight(fl5);
 //al.AddFlight(fl6);
 
-SpeechSynthesizer s = new SpeechSynthesizer();
 
 
 //speakWriteLine(al.CalculateFees());
@@ -43,13 +42,16 @@ Terminal Terminal5 = new Terminal("Terminal5");
 AddFlightsToAirline(AirlineDict, FlightDict);
 AddDataToTerminal(Terminal5);
 
+SpeechSynthesizer s = new SpeechSynthesizer();
+bool SpeechToggle = false;
+
 
 // Start Menu Loop
 bool loopContinue = true;
 while (loopContinue)
 {
     speakWriteLine("=============================================\nWelcome to Changi Airport Terminal 5\n=============================================");
-    speakWriteLine("1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates\n10. Display total fees per airline for the day");
+    speakWriteLine($"1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates\n10. Display total fees per airline for the day\n12. Toggle text to speech: {SpeechToggle}");
 
     speakWriteLine("Please select your option: ");
     string? input = Console.ReadLine().Trim();
@@ -90,6 +92,7 @@ while (loopContinue)
             DisplayTotalFees(Terminal5, FlightDict);
             break;
         case "12":
+            SpeechToggle = ToggleSpeak(SpeechToggle);
             break;
         default:
             speakWriteLine("Invalid option. Please try again.");
@@ -1328,20 +1331,52 @@ void DisplayTotalFees(Terminal terminal, Dictionary<string, Flight> FlightDict)
 // Additional feature (C): Ranen Sim
 
 
-void speakWriteLine(string message = null)
+void speakWriteLine(string message = "")
 {
-    if (message == null)
+
+    if (!SpeechToggle)
     {
-        Console.WriteLine();
+        Console.WriteLine(message);
+        return;
+    }
+    
+    Console.WriteLine(message);
+
+    message = message.Replace("=", "");
+    message = message.Replace("*", "");
+    message = message.Replace("_", "");
+    message = message.Replace("-", "");
+    message = message.Replace("  ", " ");
+    message = message.Trim();
+    s.Speak(message);
+}
+void speakWrite(string message = "")
+{
+    if (!SpeechToggle)
+    {
+        Console.Write(message);
+        return;
+    }
+    Console.Write(message);
+
+    message = message.Replace("=", "");
+    message = message.Replace("*", "");
+    message = message.Replace("_", "");
+    message = message.Replace("-", "");
+    message = message.Replace("  ", " ");
+    message = message.Trim();
+    s.Speak(message);
+}
+
+bool ToggleSpeak(bool onOrOff)
+{
+    if (!onOrOff)
+    {
+        onOrOff = true;
     }
     else
     {
-        Console.WriteLine(message);
-        s.Speak(message);
+        onOrOff = false;
     }
-}
-void speakWrite(string message)
-{
-    Console.Write(message);
-    s.Speak(message);
+    return onOrOff;
 }
