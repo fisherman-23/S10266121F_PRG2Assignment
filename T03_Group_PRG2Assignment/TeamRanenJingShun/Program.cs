@@ -1328,7 +1328,7 @@ void DisplayTotalFees(Terminal terminal, Dictionary<string, Flight> FlightDict)
     Console.WriteLine();
 }
 
-// Advanced Feature (C): Ooi Jing Shun (Weather of Destination upon Arrival)
+// Additional Feature (C): Ooi Jing Shun (Weather of Destination upon Arrival)
 async Task<string> getWeatherFromCoordinates(double latitude, double longitude, DateTime dt)
 {
     List<string> weather = new List<string>();
@@ -1512,7 +1512,7 @@ static async Task<T> ProcessDataAsync<T>(HttpClient client, string url)
 
 
 
-// Additional feature (C): Ranen Sim
+// Additional feature (C): Ranen Sim (Text to speech for the visually impaired)
 
 
 void speakWriteLine(string message = "")
