@@ -51,7 +51,7 @@ bool SpeechToggle = false;
 bool loopContinue = true;
 while (loopContinue)
 {
-    Console.WriteLine("=============================================\nWelcome to Changi Airport Terminal 5\n=============================================");
+    speakWriteLine("=============================================\nWelcome to Changi Airport Terminal 5\n=============================================");
     speakWriteLine($"1. List All Flights\n2. List Boarding Gates\n3. Assign a boarding gate to a flight\n4. Create flight\n5. Display airline flights\n6. Modify flight details\n7. Display Flight Schedule\n8. Exit\n9. Auto assign flights to gates\n10. Display total fees per airline for the day\n11. Get arrival destination weather\n12. Toggle text to speech: {SpeechToggle}\n13. Modify text to speech settings");
 
     speakWriteLine("Please select your option: ");
@@ -1324,8 +1324,8 @@ void DisplayTotalFees(Terminal terminal, Dictionary<string, Flight> FlightDict)
     speakWriteLine($"Total Discounts: ${discount:0.00}");
     speakWriteLine($"Final Collection: ${total:0.00}");
     double discountPercent = (discount / total) * 100;
-    Console.WriteLine($"Discounts Percentage: {discountPercent:0.00}%");
-    Console.WriteLine();
+    speakWriteLine($"Discounts Percentage: {discountPercent:0.00}%");
+    speakWriteLine();
 }
 
 // Additional Feature (C): Ooi Jing Shun (Weather of Destination upon Arrival)
@@ -1396,14 +1396,14 @@ async Task<string> getWeatherFromCoordinates(double latitude, double longitude, 
     }
     catch (Exception e)
     {
-        Console.WriteLine($"Error: {e.Message}");
+        speakWriteLine($"Error: {e.Message}");
         return "NIL";
     }
 
 }
 void getWeatherGivenFlight(Dictionary<string, Flight> FlightDict)
 {
-    Console.WriteLine("Enter flight number to get weather forecast: ");
+    speakWriteLine("Enter flight number to get weather forecast: ");
     string flightNumber = Console.ReadLine();
     if (FlightDict.ContainsKey(flightNumber))
     {
@@ -1411,7 +1411,7 @@ void getWeatherGivenFlight(Dictionary<string, Flight> FlightDict)
         {
             Flight flight = FlightDict[flightNumber];
             string destination = FlightDict[flightNumber].Destination;
-            Console.WriteLine($"Getting weather forecast for {destination}...");
+            speakWriteLine($"Getting weather forecast for {destination}...");
             List<string> coordinates = getCoordinates(destination).Result;
             if (coordinates[0] != "NIL")
             {
@@ -1421,28 +1421,28 @@ void getWeatherGivenFlight(Dictionary<string, Flight> FlightDict)
                 // Convert from Singapore Time (SST) to GMT (UTC)
                 TimeZoneInfo singaporeTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
                 DateTime gmtTime = TimeZoneInfo.ConvertTimeToUtc(flight.ExpectedTime, singaporeTimeZone);
-                Console.WriteLine($"SGT Time: {flight.ExpectedTime}");
-                Console.WriteLine($"GMT Time: {gmtTime}");
+                speakWriteLine($"SGT Time: {flight.ExpectedTime}");
+                speakWriteLine($"GMT Time: {gmtTime}");
 
                 string weather = getWeatherFromCoordinates(latitude, longitude, gmtTime).Result;
-                Console.WriteLine($"Weather Conditions for {destination} Upon arrival time {flight.ExpectedTime}:\n{weather}");
+                speakWriteLine($"Weather Conditions for {destination} Upon arrival time {flight.ExpectedTime}:\n{weather}");
             }
 
             else
             {
-                Console.WriteLine("Weather not found");
+                speakWriteLine("Weather not found");
             }
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Error: {e.Message}");
-            Console.WriteLine("Weather not found");
+            speakWriteLine($"Error: {e.Message}");
+            speakWriteLine("Weather not found");
         }
 
     }
     else
     {
-        Console.WriteLine("Flight not found");
+        speakWriteLine("Flight not found");
     }
 }
 
@@ -1471,7 +1471,7 @@ async Task<List<string>> getCoordinates(string destination)
     }
     catch (Exception e)
     {
-        Console.WriteLine($"Error: {e.Message}");
+        speakWriteLine($"Error: {e.Message}");
         return new List<string> { "NIL", "NIL" };
     }
 }
@@ -1486,8 +1486,8 @@ static async Task<T> ProcessDataAsync<T>(HttpClient client, string url)
         string jsonResponse = await response.Content.ReadAsStringAsync();
 
         // Print the JSON to verify its content
-        //Console.WriteLine("JSON Response:");
-        //Console.WriteLine(jsonResponse);
+        //speakWriteLine("JSON Response:");
+        //speakWriteLine(jsonResponse);
 
         // Deserialize the JSON into the specified type
         T obj = JsonSerializer.Deserialize<T>(jsonResponse);
@@ -1571,6 +1571,7 @@ SpeechSynthesizer ModifySpeech(SpeechSynthesizer s)
     {
         speakWriteLine("1. Change volume");
         speakWriteLine("2. Change speech rate");
+        speakWrite("Enter your choice: ");
 
         string? input = Console.ReadLine();
 
