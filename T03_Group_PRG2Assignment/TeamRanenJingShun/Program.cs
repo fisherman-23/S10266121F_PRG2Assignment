@@ -1381,14 +1381,17 @@ async Task<string> getWeatherFromCoordinates(double latitude, double longitude, 
         {
             if (DateTime.TryParse(time[i], out dateFromString))
             {
-
                 if ((Math.Abs((dateFromString - dt).TotalMinutes) <= 30))
                 {
-
-                    return $"{temperature[i]}°C, {weatherCodes[weatherCode[i]]}, {cloudCover[i]}% Cloud Cover, {precipitation[i]}% Chance of Precipitation";
-                }
-                else
-                {
+                    string weatherDescription;
+                    if (weatherCodes.TryGetValue(weatherCode[i], out weatherDescription))
+                    {
+                        return $"{temperature[i]}°C, {weatherDescription}, {cloudCover[i]}% Cloud Cover, {precipitation[i]}% Chance of Precipitation";
+                    }
+                    else
+                    {
+                        return $"{temperature[i]}°C, Unknown Weather Code, {cloudCover[i]}% Cloud Cover, {precipitation[i]}% Chance of Precipitation";
+                    }
                 }
             }
         }
@@ -1399,7 +1402,6 @@ async Task<string> getWeatherFromCoordinates(double latitude, double longitude, 
         speakWriteLine($"Error: {e.Message}");
         return "NIL";
     }
-
 }
 void getWeatherGivenFlight(Dictionary<string, Flight> FlightDict)
 {
