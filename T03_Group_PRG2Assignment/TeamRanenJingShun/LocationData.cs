@@ -1,4 +1,9 @@
-﻿public class Location
+﻿//==========================================================
+// Student Number : S10266121F
+// Student Name : Ooi Jing Shun
+// Partner Name : Ranen Sim
+//==========================================================
+public class Location
 {
     public long place_id { get; set; }
     public string licence { get; set; }

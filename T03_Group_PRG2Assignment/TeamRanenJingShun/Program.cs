@@ -5,30 +5,6 @@ using TeamRanenJingShun;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Speech.Synthesis;
 
-//// Temporary code to test the classes
-//Flight fl = new NORMFlight("SQ123", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Flight fl2 = new CFFTFlight("SQ122", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Flight fl3 = new CFFTFlight("SQ121", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Flight fl4 = new CFFTFlight("SQ120", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Flight fl5 = new CFFTFlight("SQ119", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-//Flight fl6 = new CFFTFlight("SQ118", "DXB", "SIN", new DateTime(2025, 1, 1), "On Time");
-////speakWriteLine(fl.CalculateFees());
-////speakWriteLine(fl2.CalculateFees());
-//Airline al = new Airline("SQ", "123");
-//Airline al2 = new Airline("SQ", "122");
-
-//al.AddFlight(fl);
-//al.AddFlight(fl2);
-//al.AddFlight(fl3);
-//al.AddFlight(fl4);
-//al.AddFlight(fl5);
-//al.AddFlight(fl6);
-
-
-
-//speakWriteLine(al.CalculateFees());
-//speakWriteLine(al2.CalculateFees());
-
 // Menu 
 // Initialise data
 string[] AirlinesCSVLines = File.ReadAllLines("assets/airlines.csv");
@@ -128,6 +104,7 @@ void LoadFiles(Dictionary<string, Airline> AirlineDict, Dictionary<string, Board
 }
 
 //2 Load files (flights)
+// Loads flight data from the flights.csv file and initializes the flight dictionary.
 void LoadFlights(Dictionary<string, Flight> FlightDict)
 {
     string[] FlightsCSVLines = File.ReadAllLines("assets/flights.csv")[1..];
@@ -161,6 +138,7 @@ void LoadFlights(Dictionary<string, Flight> FlightDict)
 
 
 //3 List all flights
+// Display all flights in the terminal
 void DisplayFlights(Dictionary<string, Flight> FlightDict, Dictionary<string, Airline> AirlineDict)
 {
     speakWriteLine("=============================================\r\nList of Flights for Changi Airport Terminal 5\r\n=============================================");
@@ -171,9 +149,9 @@ void DisplayFlights(Dictionary<string, Flight> FlightDict, Dictionary<string, Ai
         speakWriteLine();
     }
 }
-//DisplayFlights(FlightDict, AirlineDict);
 
 // Add flights to airline
+// Add flights to the respective airlines based on the first two characters of the flight number
 void AddFlightsToAirline(Dictionary<string, Airline> AirlineDict, Dictionary<string, Flight> FlightDict)
 {
     foreach (KeyValuePair<string, Flight> kvp in FlightDict)
@@ -246,11 +224,12 @@ void DisplayBoardingGates(Terminal terminal)
 
 }
 
-//DisplayBoardingGates(Terminal5);
 
 //5 Assign a boarding gate to a flight
+// Assign a boarding gate to a flight based on compatibility (whether the gate supports the flight's special request code)
 void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> FlightDict, Dictionary<string, BoardingGate> BoardingGateDict)
 {
+    // Map flight types to special request codes
     Dictionary<Type, string> requestCodeDict = new Dictionary<Type, string>
     {
         {typeof(CFFTFlight), "CFFT"},
@@ -281,23 +260,20 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
             speakWriteLine($"Supports CFFT: {BoardingGateDict[gateName].SupportsCFFT}");
             speakWriteLine($"Supports LWTT: {BoardingGateDict[gateName].SupportsLWTT}");
 
-
+            // Check if gate is already occupied
             if (Terminal5.BoardingGates[gateName].Flight != null)
             {
                 speakWriteLine("This gate is already assigned to a flight.");
                 return;
 
             }
+            // Check compatibility of the gate with the flight
             else if (!IsGateCompatible(Terminal5.BoardingGates[gateName], flight))
             {
                 speakWriteLine("This gate is not compatible with the flight.");
                 return;
             }
-
-
-
-
-
+            // Allow user to update flight status
             while (true)
             {
                 speakWriteLine("Would you like to update the status of the flight? (Y/N)");
@@ -344,8 +320,7 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
                     speakWriteLine("Invalid response.");
                 }
             }
-
-
+            // Assign flight to the gate
             Terminal5.BoardingGates[gateName].Flight = flight;
             speakWriteLine($"Flight {flight.FlightNumber} has been assigned to gate {gateName}.");
         }
@@ -359,9 +334,9 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
         speakWriteLine("Invalid flight number.");
     }
 }
-//AssignBoardingGateToFlight(Terminal5, FlightDict, BoardingGateDict);
 
 //6 Create a new flight
+// Create a new flight and add it to the flight dictionary and the respective airline's flight list
 void CreateNewFlight(Dictionary<string, Flight> FlightDict, Dictionary<string, Airline> AirlineDict)
 {
     while (true)
@@ -546,10 +521,6 @@ Airline DisplayFlightFromAirline(Terminal terminal)
     }
 
 }
-
-//Terminal5.AddAirline(al);
-//DisplayAirline(Terminal5);
-//DisplayFlightDetails(DisplayFlightFromAirline(Terminal5), Terminal5, FlightDict);
 
 
 void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string, Flight> FlightDict)
@@ -1154,6 +1125,7 @@ void ModifyBoardingGate(Flight flight, Terminal terminal)
 
 void DisplayScheduledFlights(Dictionary<string, Flight> FlightDict)
 {
+    // Map flight types to their corresponding special codes
     Dictionary<Type, string> requestCodeDict = new Dictionary<Type, string>
     {
         {typeof(CFFTFlight), "CFFT"},
@@ -1162,62 +1134,68 @@ void DisplayScheduledFlights(Dictionary<string, Flight> FlightDict)
         {typeof(NORMFlight), "None"},
         {typeof(Flight), "None"}
     };
-    List<Flight> flights = new List<Flight>();
-    foreach (KeyValuePair<string, Flight> kvp in FlightDict)
-    {
-        flights.Add(kvp.Value);
-    }
+
+    // sort all flights
+    List<Flight> flights = new List<Flight>(FlightDict.Values);
     flights.Sort();
+
     speakWriteLine("=============================================\r\nFlight Schedule for Changi Airport Terminal 5\r\n=============================================");
     speakWriteLine($"{"Flight Number",-17}{"Airline name",-20}{"Origin",-20}{"Destination",-20}{"Expected Departure/Arrival Time",-35}{"Status",-15}{"Special Code",-15}{"Boarding Gate",-15}");
+
+    // Display each flight's details
     foreach (Flight flight in flights)
     {
         BoardingGate? boardingGate = FindBoardingGateByFlightNumber(FlightDict, Terminal5, flight);
         speakWriteLine($"{flight.FlightNumber,-17}{AirlineDict[flight.FlightNumber[0..2]].Name,-20}{flight.Origin,-20}{flight.Destination,-20}{flight.ExpectedTime,-35}{flight.Status,-15}{requestCodeDict[flight.GetType()],-15}{boardingGate?.GateName ?? "Unassigned",-15}\n");
     }
 }
-//DisplayScheduledFlights(FlightDict);
 
 BoardingGate? FindBoardingGateByFlightNumber(Dictionary<string, Flight> FlightDict, Terminal Terminal5, Flight targetFlight)
 {
-    string flightNumber = targetFlight.FlightNumber;
-    if (FlightDict.ContainsKey(flightNumber))
+    // Check if flight exists in dictionary
+    if (FlightDict.ContainsKey(targetFlight.FlightNumber))
     {
-        Flight flight = FlightDict[flightNumber];
         Dictionary<string, BoardingGate> BoardingGateDict = Terminal5.BoardingGates;
-        foreach (KeyValuePair<string, BoardingGate> kvp in BoardingGateDict)
+
+        // Search for the assigned boarding gate
+        foreach (var kvp in BoardingGateDict)
         {
-            if (kvp.Value.Flight == flight)
+            if (kvp.Value.Flight == targetFlight)
             {
-                //speakWriteLine($"Flight {flightNumber} is assigned to gate {kvp.Key}");
                 return kvp.Value;
             }
         }
-        //speakWriteLine($"Flight {flightNumber} is not assigned to any gate.");
-        return null;
     }
-    else
-    {
-        return null;
-    }
+
+    return null; // Return null if no assigned gate is found
 }
 
+
 // Advanced Feature (A): Ooi Jing Shun 
+
 void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Terminal5)
 {
     Queue<Flight> unassignedFlights = new Queue<Flight>();
+
     List<BoardingGate> unassignedGates = new List<BoardingGate>();
 
+    // Iterate through all flights in the dictionary to check if they have an assigned gate
     foreach (KeyValuePair<string, Flight> kvp in FlightDict)
     {
         BoardingGate? result = FindBoardingGateByFlightNumber(FlightDict, Terminal5, kvp.Value);
+
+        // If no suitable gate is found, add the flight to the unassigned queue
         if (result == null)
         {
             unassignedFlights.Enqueue(kvp.Value);
         }
     }
+
+    // Store the initial count of unassigned flights for reporting
     int initialFlightCount = unassignedFlights.Count;
     speakWriteLine($"Total number of flights that are unassigned to boarding gates: {initialFlightCount}");
+
+    // Identify all unassigned boarding gates in Terminal 5
     foreach (KeyValuePair<string, BoardingGate> kvp in Terminal5.BoardingGates)
     {
         if (kvp.Value.Flight == null)
@@ -1225,35 +1203,47 @@ void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Te
             unassignedGates.Add(kvp.Value);
         }
     }
+
+    // Store the initial count of unassigned gates for reporting
     int initialGateCount = unassignedGates.Count;
     speakWriteLine($"Total number of unassigned boarding gates: {initialGateCount}");
 
     int i = 0;
+
+    // Attempt to assign unassigned flights to available gates
     while (unassignedFlights.Count > 0 && unassignedGates.Count > 0)
     {
+        // Dequeue the next unassigned flight
         Flight flight = unassignedFlights.Dequeue();
         i = 0;
+
         while (true)
         {
+            // Check if the current gate is compatible with the flight type
             if (IsGateCompatible(unassignedGates[i], flight))
             {
+                // Assign the flight to the gate
                 Terminal5.BoardingGates[unassignedGates[i].GateName].Flight = flight;
 
                 speakWriteLine($"Flight: {flight.FlightNumber}, Airline: {Terminal5.Airlines[flight.FlightNumber[0..2]].Name}, Origin: {flight.Origin}, Destination: {flight.Destination}, Departure/Arrival Time: {flight.ExpectedTime.ToString("dd/MM/yyyy hh:mm tt:00")}, has been assigned to gate {unassignedGates[i].GateName}\n");
+
+                // Remove the assigned gate from the unassigned list
                 unassignedGates.RemoveAt(i);
                 break;
             }
-
             else
             {
+                // Check the next available gate
                 i++;
             }
         }
-
-
     }
+
+    // Output the number of successfully assigned flights and gates
     speakWriteLine($"Total number of flights that are processed and assigned to boarding gates: {initialFlightCount - unassignedFlights.Count}");
     speakWriteLine($"Total number of boarding gates that are processed and assigned to flights: {initialGateCount - unassignedGates.Count}");
+
+    // Calculate and display the percentage of flights processed automatically
     if (FlightDict.Count - initialFlightCount == 0)
     {
         speakWriteLine("100% of flights were processed automatically (no previously assigned flights).");
@@ -1263,6 +1253,7 @@ void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Te
         speakWriteLine($"Percentage of flights processed automatically over those already assigned: {(double)(initialFlightCount - unassignedFlights.Count) / (FlightDict.Count - initialFlightCount):P2}");
     }
 
+    // Calculate and display the percentage of gates processed automatically over already assigned 
     if (Terminal5.BoardingGates.Count - initialGateCount == 0)
     {
         speakWriteLine("100% of gates were processed automatically (no previously assigned gates).");
@@ -1271,12 +1262,9 @@ void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Te
     {
         speakWriteLine($"Percentage of gates processed automatically over those already assigned: {(double)(initialGateCount - unassignedGates.Count) / (Terminal5.BoardingGates.Count - initialGateCount):P2}");
     }
-
-
-
-
 }
 
+// Checks if the given boarding gate is compatible with the specified flight type.
 bool IsGateCompatible(BoardingGate gate, Flight flight) =>
     (flight is CFFTFlight && gate.SupportsCFFT) ||
     (flight is DDJBFlight && gate.SupportsDDJB) ||
@@ -1333,69 +1321,48 @@ async Task<string> getWeatherFromCoordinates(double latitude, double longitude, 
 {
     List<string> weather = new List<string>();
     using HttpClient client = new();
+
+    // URL for weather data
     string forecast = $"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m,cloudcover,precipitation_probability,weathercode";
 
     try
     {
         var result = await ProcessDataAsync<Rootobject>(client, forecast);
         var hourly = result.hourly;
+
+        // Mapping weather codes to descriptions
         var weatherCodes = new Dictionary<int, string>
         {
-            { 0, "Clear sky" },
-            { 1, "Partly cloudy" },
-            { 2, "Partly cloudy" },
-            { 3, "Partly cloudy" },
-            { 45, "Fog" },
-            { 48, "Fog" },
-            { 51, "Drizzle" },
-            { 53, "Drizzle" },
-            { 55, "Drizzle" },
-            { 56, "Freezing drizzle" },
-            { 57, "Freezing drizzle" },
-            { 61, "Rain" },
-            { 63, "Rain" },
-            { 65, "Rain" },
-            { 66, "Freezing rain" },
-            { 67, "Freezing rain" },
-            { 71, "Snowfall" },
-            { 73, "Snowfall" },
-            { 75, "Snowfall" },
-            { 77, "Snow grains" },
-            { 80, "Rain showers" },
-            { 81, "Rain showers" },
-            { 82, "Rain showers" },
-            { 85, "Snow showers" },
-            { 86, "Snow showers" },
-            { 95, "Thunderstorm" },
-            { 96, "Thunderstorm with hail" },
-            { 99, "Thunderstorm with hail" }
+            { 0, "Clear sky" }, { 1, "Partly cloudy" }, { 2, "Partly cloudy" }, { 3, "Partly cloudy" },
+            { 45, "Fog" }, { 48, "Fog" }, { 51, "Drizzle" }, { 53, "Drizzle" }, { 55, "Drizzle" },
+            { 56, "Freezing drizzle" }, { 57, "Freezing drizzle" }, { 61, "Rain" }, { 63, "Rain" },
+            { 65, "Rain" }, { 66, "Freezing rain" }, { 67, "Freezing rain" }, { 71, "Snowfall" },
+            { 73, "Snowfall" }, { 75, "Snowfall" }, { 77, "Snow grains" }, { 80, "Rain showers" },
+            { 81, "Rain showers" }, { 82, "Rain showers" }, { 85, "Snow showers" }, { 86, "Snow showers" },
+            { 95, "Thunderstorm" }, { 96, "Thunderstorm with hail" }, { 99, "Thunderstorm with hail" }
         };
 
+        // Extract weather data arrays
         string[] time = hourly.time;
         float[] temperature = hourly.temperature_2m;
         int[] cloudCover = hourly.cloudcover;
         int[] precipitation = hourly.precipitation_probability;
         int[] weatherCode = hourly.weathercode;
+
         DateTime dateFromString;
         for (int i = 0; i < time.Length; i++)
         {
-            if (DateTime.TryParse(time[i], out dateFromString))
+            // Find the closest weather data to the given datetime
+            if (DateTime.TryParse(time[i], out dateFromString) && Math.Abs((dateFromString - dt).TotalMinutes) <= 30)
             {
-                if ((Math.Abs((dateFromString - dt).TotalMinutes) <= 30))
+                if (weatherCodes.TryGetValue(weatherCode[i], out string weatherDescription))
                 {
-                    string weatherDescription;
-                    if (weatherCodes.TryGetValue(weatherCode[i], out weatherDescription))
-                    {
-                        return $"{temperature[i]}°C, {weatherDescription}, {cloudCover[i]}% Cloud Cover, {precipitation[i]}% Chance of Precipitation";
-                    }
-                    else
-                    {
-                        return $"{temperature[i]}°C, Unknown Weather Code, {cloudCover[i]}% Cloud Cover, {precipitation[i]}% Chance of Precipitation";
-                    }
+                    return $"{temperature[i]}°C, {weatherDescription}, {cloudCover[i]}% Cloud Cover, {precipitation[i]}% Chance of Precipitation";
                 }
+                return $"{temperature[i]}°C, Unknown Weather Code, {cloudCover[i]}% Cloud Cover, {precipitation[i]}% Chance of Precipitation";
             }
         }
-        return "NIL";
+        return "NIL"; // No matching data found
     }
     catch (Exception e)
     {
@@ -1403,33 +1370,39 @@ async Task<string> getWeatherFromCoordinates(double latitude, double longitude, 
         return "NIL";
     }
 }
+
 void getWeatherGivenFlight(Dictionary<string, Flight> FlightDict)
 {
     speakWriteLine("Enter flight number to get weather forecast: ");
     string flightNumber = Console.ReadLine();
+
     if (FlightDict.ContainsKey(flightNumber))
     {
         try
         {
+            // Retrieve flight details and destination
             Flight flight = FlightDict[flightNumber];
-            string destination = FlightDict[flightNumber].Destination;
+            string destination = flight.Destination;
             speakWriteLine($"Getting weather forecast for {destination}...");
+
+            // Get latitude and longitude of the destination
             List<string> coordinates = getCoordinates(destination).Result;
             if (coordinates[0] != "NIL")
             {
                 double latitude = Convert.ToDouble(coordinates[0]);
                 double longitude = Convert.ToDouble(coordinates[1]);
 
-                // Convert from Singapore Time (SST) to GMT (UTC)
+                // Convert flight departure time from Singapore Standard Time (SST) to GMT (UTC)
                 TimeZoneInfo singaporeTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
                 DateTime gmtTime = TimeZoneInfo.ConvertTimeToUtc(flight.ExpectedTime, singaporeTimeZone);
+
                 speakWriteLine($"SGT Time: {flight.ExpectedTime}");
                 speakWriteLine($"GMT Time: {gmtTime}");
 
+                // Fetch weather forecast for the destination at arrival time
                 string weather = getWeatherFromCoordinates(latitude, longitude, gmtTime).Result;
                 speakWriteLine($"Weather Conditions for {destination} Upon arrival time {flight.ExpectedTime}:\n{weather}");
             }
-
             else
             {
                 speakWriteLine("Weather not found");
@@ -1440,7 +1413,6 @@ void getWeatherGivenFlight(Dictionary<string, Flight> FlightDict)
             speakWriteLine($"Error: {e.Message}");
             speakWriteLine("Weather not found");
         }
-
     }
     else
     {
@@ -1451,25 +1423,26 @@ void getWeatherGivenFlight(Dictionary<string, Flight> FlightDict)
 async Task<List<string>> getCoordinates(string destination)
 {
     using HttpClient client = new();
+
+    // Set user agent to comply with API requirements
     client.DefaultRequestHeaders.Add("User-Agent", "YourAppName/1.0 (contact@yourdomain.com)");
+
+    // Construct API request URL for geolocation data
     string url = $"https://nominatim.openstreetmap.org/search?q={destination}&format=json";
 
     try
     {
-
+        // Fetch and process geolocation data
         var result = await ProcessDataAsync<List<Location>>(client, url);
-        var property = result;
 
-        if (property.Count == 0)
+        // Return NIL if no results are found
+        if (result.Count == 0)
         {
             return new List<string> { "NIL", "NIL" };
         }
-        else
-        {
-            string lat = result[0].lat;
-            string lon = result[0].lon;
-            return new List<string> { lat, lon };
-        }
+
+        // Extract latitude and longitude from the first search result
+        return new List<string> { result[0].lat, result[0].lon };
     }
     catch (Exception e)
     {
@@ -1477,23 +1450,20 @@ async Task<List<string>> getCoordinates(string destination)
         return new List<string> { "NIL", "NIL" };
     }
 }
+
 static async Task<T> ProcessDataAsync<T>(HttpClient client, string url)
 {
     try
     {
-        // Get the JSON response as a string
+        // Send an HTTP GET request and get the response
         using HttpResponseMessage response = await client.GetAsync(url);
-        response.EnsureSuccessStatusCode(); // Ensure the request was successful
+        response.EnsureSuccessStatusCode(); // Throw an exception if the request failed
 
+        // Read the response content as a JSON string
         string jsonResponse = await response.Content.ReadAsStringAsync();
 
-        // Print the JSON to verify its content
-        //speakWriteLine("JSON Response:");
-        //speakWriteLine(jsonResponse);
-
-        // Deserialize the JSON into the specified type
-        T obj = JsonSerializer.Deserialize<T>(jsonResponse);
-        return obj;
+        // Deserialize the JSON into the specified object type
+        return JsonSerializer.Deserialize<T>(jsonResponse);
     }
     catch (HttpRequestException e)
     {
@@ -1511,7 +1481,6 @@ static async Task<T> ProcessDataAsync<T>(HttpClient client, string url)
         throw;
     }
 }
-
 
 
 // Additional feature (C): Ranen Sim (Text to speech for the visually impaired)

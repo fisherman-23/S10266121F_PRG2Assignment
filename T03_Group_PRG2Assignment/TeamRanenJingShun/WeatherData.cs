@@ -1,4 +1,8 @@
-﻿
+﻿//==========================================================
+// Student Number : S10266121F
+// Student Name : Ooi Jing Shun
+// Partner Name : Ranen Sim
+//==========================================================
 public class Rootobject
 {
     public float latitude { get; set; }
