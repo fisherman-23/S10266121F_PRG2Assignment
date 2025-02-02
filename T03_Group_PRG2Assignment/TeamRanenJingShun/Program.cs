@@ -1272,7 +1272,7 @@ void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Te
     // Calculate and display the percentage of flights processed automatically
     if (FlightDict.Count - initialFlightCount == 0)
     {
-        speakWriteLine("100% of flights were processed automatically (no previously assigned flights).");
+        speakWriteLine("No flights were assigned previously.");
     }
     else
     {
@@ -1282,7 +1282,7 @@ void processUnassignedFlights(Dictionary<string, Flight> FlightDict, Terminal Te
     // Calculate and display the percentage of gates processed automatically over already assigned 
     if (Terminal5.BoardingGates.Count - initialGateCount == 0)
     {
-        speakWriteLine("100% of gates were processed automatically (no previously assigned gates).");
+        speakWriteLine("No gates were assigned previously.");
     }
     else
     {
