@@ -365,6 +365,15 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict, Dictionary<string, A
             speakWriteLine("Invalid flight number. Ensure it's not empty and starts with a valid airline code.");
         }
 
+        if (Terminal5 == null)
+        {
+            speakWriteLine("Terminal does not exist, create the terminal first.");
+        }
+        else if (FlightDict.ContainsKey(flightNumber) || Terminal5.Flights.ContainsKey(flightNumber))
+        {
+            speakWriteLine($"Flight already exists, modify flight details for flight {flightNumber} first");
+            return;
+        }
         // Validate Origin
         string origin;
         while (true)
