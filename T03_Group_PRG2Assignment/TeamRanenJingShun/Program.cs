@@ -270,8 +270,15 @@ void AssignBoardingGateToFlight(Terminal Terminal5, Dictionary<string, Flight> F
             // Check compatibility of the gate with the flight
             else if (!IsGateCompatible(Terminal5.BoardingGates[gateName], flight))
             {
-                speakWriteLine("This gate is not compatible with the flight.");
-                return;
+                // check if its none, if its none, then its compatible
+                if (requestCodeDict[flight.GetType()] == "None")
+                {
+                }
+                else
+                {
+                    speakWriteLine("This gate is not compatible with the flight.");
+                    return;
+                }
             }
             // Allow user to update flight status
             while (true)
