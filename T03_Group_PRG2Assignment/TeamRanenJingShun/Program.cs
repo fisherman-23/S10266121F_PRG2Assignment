@@ -4,6 +4,7 @@ using System.Text.Json;
 using TeamRanenJingShun;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Speech.Synthesis;
+using System.Data;
 
 // Menu 
 // Initialise data
@@ -161,6 +162,9 @@ void AddFlightsToAirline(Dictionary<string, Airline> AirlineDict, Dictionary<str
 }
 
 //4 List all boarding gates
+
+// Add airlines and boarding gates to terminal
+
 void AddDataToTerminal(Terminal terminal)
 {
     foreach (KeyValuePair<string, Airline> kvp in AirlineDict)
@@ -173,6 +177,7 @@ void AddDataToTerminal(Terminal terminal)
     }
 }
 
+// Check if each boarding gate supports a flight type and display accordingly
 void DisplayBoardingGates(Terminal terminal)
 {
     speakWriteLine("=============================================\r\nList of Boarding Gates for Changi Airport Terminal 5\r\n=============================================");
@@ -208,16 +213,6 @@ void DisplayBoardingGates(Terminal terminal)
 
 
         speakWriteLine($"{kvp.Value.GateName,-15} {DDJB,-20} {CFFT,-20} {LWTT,-20} {flightdisplay}");
-
-
-        //if (kvp.Value.Flight != null)
-        //{
-        //    speakWriteLine($"Assigned Flight Number: {kvp.Value.Flight.FlightNumber}");
-        //}
-        //else
-        //{
-        //    speakWriteLine("No flight assigned to this gate.");
-        //}
 
         speakWriteLine();
     }
@@ -456,6 +451,8 @@ void CreateNewFlight(Dictionary<string, Flight> FlightDict, Dictionary<string, A
 
 
 // 7 Display full flight details from an airline
+
+// List all airlines in terminal
 void DisplayAirline(Terminal terminal)
 {
     speakWriteLine();
@@ -467,6 +464,7 @@ void DisplayAirline(Terminal terminal)
     }
 }
 
+// List flighs from selected airline
 Airline DisplayFlightFromAirline(Terminal terminal)
 {
     string? code = null;
@@ -485,6 +483,7 @@ Airline DisplayFlightFromAirline(Terminal terminal)
         }
 
 
+        //If airline exists dislay details else continue loop
         Airline? airline = null;
         foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
         {
@@ -504,7 +503,6 @@ Airline DisplayFlightFromAirline(Terminal terminal)
             else
             {
                 speakWriteLine($"{"Flight Number",-15} {"Origin",-20} {"Destination"}");
-                //speakWriteLine("Departure/Arrival Time");
                 foreach (KeyValuePair<string, Flight> kvp in airline.Flights)
                 {
                     Flight flight = kvp.Value;
@@ -522,7 +520,7 @@ Airline DisplayFlightFromAirline(Terminal terminal)
 
 }
 
-
+// Prompt for specific flight number to list full flight details for that flight
 void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string, Flight> FlightDict)
 {
     string? code = null;
@@ -542,6 +540,7 @@ void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string,
 
         foreach (KeyValuePair<string, Flight> kvp in airline.Flights)
         {
+            //Find flight and display flight details
             Flight flight = kvp.Value;
             if (kvp.Key == code)
             {
@@ -553,16 +552,12 @@ void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string,
 
                 bool sr = false;
                 bool bg = false;
-                //BoardingGate? boardingGate = null;
-                if (flight.GetType() == typeof(CFFTFlight) || flight.GetType() == typeof(DDJBFlight) || flight.GetType() == typeof(LWTTFlight))
+                if (flight is CFFTFlight || flight is DDJBFlight || flight is LWTTFlight)
                 {
                     speakWrite($"{"Special Request Code",-30}");
                     sr = true;
                 }
-                //if (!(flight.GetType() == typeof(NORMFlight))) {
-                //    speakWrite($"{"Boarding Gate", -15}");
-                //    bg = true;
-                //}
+
                 BoardingGate? boardingGate = FindBoardingGateByFlightNumber(FlightDict, terminal, flight);
                 if (boardingGate != null)
                 {
@@ -578,16 +573,14 @@ void DisplayFlightDetails(Airline airline, Terminal terminal, Dictionary<string,
                 }
                 if (bg)
                 {
-                    speakWriteLine($"{FindBoardingGateByFlightNumber(FlightDict, terminal, flight)}");
-                    //foreach (string gate in GetBoardingGate(flight))
-                    //{
-                    //    speakWrite(gate + " ");
-                    //}
+                    speakWriteLine($"{boardingGate.GateName}");
                 }
                 speakWriteLine();
                 return;
             }
         }
+        speakWriteLine("Flight not found");
+        continue;
     }
 }
 
@@ -615,6 +608,7 @@ string GetRequestCode(Flight flight)
 
 // 8 Modify flight details
 
+// Display full flight details for every flight in an airline
 Airline? DisplayFullFlightFromAirline(Terminal terminal)
 {
     string? code = null;
@@ -641,6 +635,7 @@ Airline? DisplayFullFlightFromAirline(Terminal terminal)
                 airline = kvp.Value;
             }
         }
+
         if (airline != null)
         {
             speakWriteLine();
@@ -685,7 +680,7 @@ Airline? DisplayFullFlightFromAirline(Terminal terminal)
                     }
                     if (bg)
                     {
-                        speakWrite($"{FindBoardingGateByFlightNumber(FlightDict, terminal, flight)}");
+                        speakWrite($"{boardingGate.GateName}");
                     }
                     else
                     {
@@ -725,6 +720,7 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
 {
     while (true)
     {
+    // call function to display full flight details and return airline
         DisplayAirline(terminal);
         Airline? airline = DisplayFullFlightFromAirline(Terminal5);
         if (airline == null)
@@ -733,6 +729,7 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
         }
         speakWriteLine("Enter flight code to modify flight");
         string? input = Console.ReadLine();
+        // validate input
         if (input != null)
         {
             input = input.ToUpper();
@@ -743,18 +740,23 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
             continue;
         }
 
+        // check if flight exists
         Flight? flight = null;
-        foreach (KeyValuePair<string, Flight> kvp in airline.Flights)
+        foreach (KeyValuePair<string, Airline> akvp in terminal.Airlines)
         {
-            if (kvp.Key == input)
+            Airline newairline = akvp.Value;
+            foreach (KeyValuePair<string, Flight> kvp in newairline.Flights)
             {
-                flight = kvp.Value;
+                if (kvp.Key == input)
+                {
+                    flight = kvp.Value;
+                }
             }
-        }
-        if (flight == null)
-        {
-            speakWriteLine("Invalid flight code");
-            continue;
+            if (flight == null)
+            {
+                speakWriteLine("Invalid flight code");
+                continue;
+            }
         }
 
         speakWriteLine();
@@ -785,45 +787,55 @@ void ModifyFlightUserInput(Terminal terminal, Dictionary<string, Flight> FlightD
 
 void DeleteFlight(Terminal terminal, Flight flight, Dictionary<string, Flight> FlightDict)
 {
-    speakWriteLine($"Are you sure you want to delete Flight Number: {flight.FlightNumber}? (Y/N)");
-    string confirmation = Console.ReadLine()?.Trim().ToUpper();
-
-    if (confirmation == "Y")
+    while (true)
     {
-        if (terminal.Flights.ContainsKey(flight.FlightNumber))
-        {
-            terminal.Flights.Remove(flight.FlightNumber);
-            speakWriteLine("Flight removed from terminal.");
-        }
+        speakWriteLine($"Are you sure you want to delete Flight Number: {flight.FlightNumber}? (Y/N)");
+        string confirmation = Console.ReadLine()?.Trim().ToUpper();
 
-        foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
+        if (confirmation == "Y")
         {
-            Airline airline = kvp.Value;
-            if (airline.Flights.ContainsKey(flight.FlightNumber))
+            if (terminal.Flights.ContainsKey(flight.FlightNumber))
             {
-                airline.Flights.Remove(flight.FlightNumber);
-                speakWriteLine($"Flight removed from {airline.Name}.");
-                break;
+                terminal.Flights.Remove(flight.FlightNumber);
+                speakWriteLine("Flight removed from terminal.");
             }
-        }
 
-        foreach (KeyValuePair<string, BoardingGate> kvp in terminal.BoardingGates)
-        {
-            BoardingGate gate = kvp.Value;
-            if (gate.Flight?.FlightNumber == flight.FlightNumber)
+            foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
             {
-                gate.Flight = null;
-                speakWriteLine("Flight unassigned from boarding gate");
-                break;
+                Airline airline = kvp.Value;
+                if (airline.Flights.ContainsKey(flight.FlightNumber))
+                {
+                    airline.Flights.Remove(flight.FlightNumber);
+                    speakWriteLine($"Flight removed from {airline.Name}.");
+                    break;
+                }
             }
-        }
 
-        FlightDict.Remove(flight.FlightNumber);
-        speakWriteLine("Flight deleted successfully");
-    }
-    else
-    {
-        speakWriteLine("Flight deletion canceled");
+            foreach (KeyValuePair<string, BoardingGate> kvp in terminal.BoardingGates)
+            {
+                BoardingGate gate = kvp.Value;
+                if (gate.Flight?.FlightNumber == flight.FlightNumber)
+                {
+                    gate.Flight = null;
+                    speakWriteLine("Flight unassigned from boarding gate");
+                    break;
+                }
+            }
+
+            FlightDict.Remove(flight.FlightNumber);
+            speakWriteLine("Flight deleted successfully");
+            return;
+        }
+        else if (confirmation == "N")
+        {
+            speakWriteLine("Flight deletion canceled");
+            return;
+        }
+        else
+        {
+            speakWrite("Invalid input");
+            continue;
+        }
     }
 }
 
@@ -833,6 +845,7 @@ void ModifyFlightInfo(Terminal terminal, Flight flight, Dictionary<string, Fligh
 {
     while (true)
     {
+        // Prompt for 4 choices and call each function respectively
         speakWriteLine("1. Modify Basic Information\r\n2. Modify Status\r\n3. Modify Special Request Code\r\n4. Modify Boarding Gate");
         speakWriteLine("Choose an option:");
         string? input = Console.ReadLine();
@@ -886,6 +899,7 @@ void ModifyBasicInformation(Flight flight)
 {
     while (true)
     {
+        // Ask user for new flight info and validate each input directly after
         speakWriteLine();
         speakWriteLine("Enter new Origin: ");
         string? origin = Console.ReadLine();
@@ -921,6 +935,7 @@ void ModifyBasicInformation(Flight flight)
             continue;
         }
 
+        // Update flight details
         flight.Origin = origin;
         flight.Destination = destination;
         flight.ExpectedTime = expectedTime.Value;
@@ -1003,6 +1018,7 @@ void ModifySpecialRequestCode(Flight flight, Terminal terminal, Dictionary<strin
         }
 
         input = input.ToUpper();
+        // Create a new flight based on the type of flight with the same values as the previous flight
         if (input == "1")
         {
             newFlight = new CFFTFlight(flight.FlightNumber, flight.Origin, flight.Destination, flight.ExpectedTime, flight.Status);
@@ -1030,6 +1046,7 @@ void ModifySpecialRequestCode(Flight flight, Terminal terminal, Dictionary<strin
         }
     }
 
+    // Update changes accross relavent dictionaries
     foreach (KeyValuePair<string, Airline> kvp in terminal.Airlines)
     {
         Airline airline = kvp.Value;
@@ -1079,11 +1096,13 @@ void ModifyBoardingGate(Flight flight, Terminal terminal)
 
         if (input == null || input == "")
         {
+            speakWriteLine("Invalid input");
             continue;
         }
 
         if (!terminal.BoardingGates.ContainsKey(input))
         {
+            speakWriteLine("Boarding Gate does not exist");
             continue;
         }
 
@@ -1484,7 +1503,6 @@ static async Task<T> ProcessDataAsync<T>(HttpClient client, string url)
 
 
 // Additional feature (C): Ranen Sim (Text to speech for the visually impaired)
-
 
 void speakWriteLine(string message = "")
 {
